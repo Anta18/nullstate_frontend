@@ -40,3 +40,79 @@ body {
 .font-roboto-mono {
   font-family: 'Roboto Mono', monospace;
 }
+
+/* Custom scrollbar styling for the left side */
+.custom-scrollbar::-webkit-scrollbar {
+  overflow: overlay;
+  width: 9px; 
+  height: 9px; 
+}
+
+/* Styling for the scrollbar track with extra padding */
+.custom-scrollbar::-webkit-scrollbar-track {
+  background-color: black;
+  padding: 2px; /* Extra padding around the track */
+}
+
+/* Styling for the scrollbar thumb with increased padding */
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  padding-top: 8px; /* Increased from 4px to 8px */
+  background-color: #686868; 
+  border-radius: 10px; 
+  margin: 2px; /* Extra margin for additional spacing */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
+}
+
+/* Add arrow buttons to the scrollbar track with extra padding */
+.custom-scrollbar::-webkit-scrollbar-button {
+  width: 9px;
+  height: 9px;
+  background-color: black;
+  background-repeat: no-repeat;
+  background-position: center;
+  padding: 2px; /* Extra padding for the arrow buttons */
+}
+
+/* Up arrow (decrement button) for vertical scrollbars */
+.custom-scrollbar::-webkit-scrollbar-button:vertical:decrement {
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="9" height="9"><polygon points="4.5,0 9,9 0,9" fill="%23686868"/></svg>');
+  padding: 4px;
+}
+
+/* Down arrow (increment button) for vertical scrollbars */
+.custom-scrollbar::-webkit-scrollbar-button:vertical:increment {
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="9" height="9"><polygon points="0,0 9,0 4.5,9" fill="%23686868"/></svg>');
+  padding: 4px
+}
+
+/* Change arrow background on hover */
+.custom-scrollbar::-webkit-scrollbar-button:hover {
+  background-color: #555;
+}
+
+
+/* Invisible custom scrollbar */
+.invisible-scrollbar::-webkit-scrollbar {
+  width: 0;
+  height: 0; 
+}
+
+/* Track (not visible but can still be defined) */
+.invisible-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Scrollbar thumb (also invisible) */
+.invisible-scrollbar::-webkit-scrollbar-thumb {
+  background-color: transparent; 
+  border-radius: 0; 
+}
+
+/* No hover effect, as it's invisible */
+.invisible-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: transparent;
+}
+

@@ -6,12 +6,8 @@ import Link from "next/link";
 const Navbar = () => {
   const pathname = usePathname();
 
-  if (pathname === "/") {
-    return null;
-  }
-
   return (
-    <header className="sticky top-0 z-50 flex items-center px-8 py-4 font-w95 border-b border-gray-700 bg-black">
+    <header className="flex items-center px-8 py-4 font-w95">
       <Link href="/" className="text-2xl tracking-wide text-white pr-20">
         {"{}State"}
       </Link>
