@@ -11,7 +11,7 @@ const Navbar = () => {
   }
 
   return (
-    <header className="sticky top-0 z-50 flex items-center px-8 py-4 font-w95 border-b border-gray-700 bg-black">
+    <header className="sticky top-0 z-50 flex items-center px-8 py-4 font-w95 border-b border-gray-700 bg-black h-16">
       <Link href="/" className="text-2xl tracking-wide text-white pr-20">
         {"{}State"}
       </Link>
@@ -27,14 +27,14 @@ const Navbar = () => {
           Collection
         </Link>
         <Link
-          href="/portfolio"
+          href="/buy"
           className={
-            pathname === "/portfolio"
+            pathname === "/buy"
               ? "text-purple-500 transition-colors"
               : "text-white transition-colors"
           }
         >
-          Portfolio
+          Buy
         </Link>
       </nav>
     </header>

@@ -1,0 +1,54 @@
+<svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <mask id="mask0_36_3335" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="4" y="2" width="8" height="9">
+    <foreignObject x="0" y="0" width="0" height="0">
+      <div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(2.86px);clip-path:url(#bgblur_0_36_3335_clip_path);height:100%;width:100%"></div>
+    </foreignObject>
+    <path data-figma-bg-blur-radius="5.72877" fill-rule="evenodd" clip-rule="evenodd" 
+      d="M4.97535 8.84062C4.78837 8.72766 4.69488 8.67117 4.67167 8.57716C4.64846 8.48314 4.70465 8.38858 4.81704 8.19944L7.94035 2.94346C8.11604 2.64782 8.20388 2.5 8.33349 2.5C8.46311 2.5 8.55094 2.64783 8.72661 2.94348L11.8492 8.19897C11.9617 8.38831 12.0179 8.48298 11.9946 8.57705C11.9714 8.67113 11.8777 8.72756 11.6904 8.84041L9.20805 10.3361C8.77914 10.5945 8.56469 10.7237 8.32818 10.7235C8.09167 10.7234 7.87737 10.5939 7.44877 10.335L4.97535 8.84062Z" 
+      fill="currentColor"/>
+  </mask>
+  <g mask="url(#mask0_36_3335)">
+    <path d="M8.32764 16.0192L18.4389 11.4352L8.32764 6.86621L8.32764 16.0192Z" fill="currentColor"/>
+    <path d="M8.25684 2.54573L8.33884 -2.11621L18.4845 11.519L8.32846 6.86642V10.8224L8.25684 10.7499V2.54573Z" fill="currentColor"/>
+    <path d="M0.63916 10.3533L8.33335 16.0477V6.86621L0.63916 10.3533Z" fill="currentColor"/>
+    <path d="M8.33262 -2.11229L8.33261 6.86661L0.625 10.4006L8.33262 -2.11229Z" fill="currentColor"/>
+    <foreignObject x="4.27812" y="1.98223" width="8.10928" height="9.18594">
+      <div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(0.15px);clip-path:url(#bgblur_1_36_3335_clip_path);height:100%;width:100%"></div>
+    </foreignObject>
+    <path data-figma-bg-blur-radius="0.3" fill-rule="evenodd" clip-rule="evenodd" 
+      d="M8.33265 2.28323L8.33293 2.28223L8.33308 2.28249L8.33312 2.28243V2.28256L12.0876 8.60143L12.0684 8.61294L12.0772 8.61699L8.3298 10.8656V10.8681L8.32772 10.8668L8.32564 10.8681V10.8656L4.57812 8.61699L4.59279 8.61023L4.57812 8.60143L8.33265 2.28323Z" 
+      fill="currentColor"/>
+  </g>
+  <mask id="mask1_36_3335" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="4" y="9" width="8" height="6">
+    <path fill-rule="evenodd" clip-rule="evenodd" 
+      d="M8.13967 14.4023C8.23115 14.5331 8.42252 14.5331 8.51404 14.4023L11.9216 9.53089C11.9575 9.47963 11.899 9.41504 11.8456 9.447L8.64787 11.3636C8.44982 11.4823 8.20384 11.4823 8.00582 11.3635L4.81016 9.44705C4.75684 9.41508 4.69833 9.47965 4.73417 9.53092L8.13967 14.4023Z" 
+      fill="currentColor"/>
+  </mask>
+  <g mask="url(#mask1_36_3335)">
+    <path d="M8.31148 10.0171L8.19678 10.1591V17.4117L8.31148 17.7516L17.6274 4.43359L8.31148 10.0171Z" fill="currentColor"/>
+    <path d="M8.32706 17.7516V10.0171L-0.983398 4.43359L8.32706 17.7516Z" fill="currentColor"/>
+    <path fill-rule="evenodd" clip-rule="evenodd" 
+      d="M8.32708 12.4875L12.0777 9.30176L8.85818 11.007C8.52541 11.1833 8.12877 11.1832 7.79605 11.0069L4.57861 9.30176L8.32708 12.4875Z" 
+      fill="currentColor" fill-opacity="0.79"/>
+    <foreignObject x="4.27861" y="9.00078" width="8.09902" height="5.96621">
+      <div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(0.15px);clip-path:url(#bgblur_2_36_3335_clip_path);height:100%;width:100%"></div>
+    </foreignObject>
+    <path data-figma-bg-blur-radius="0.3" fill-rule="evenodd" clip-rule="evenodd" 
+      d="M8.32708 14.6627L8.33029 14.6673V14.6581L12.0777 9.30078L8.91081 11.1989C8.55071 11.4147 8.10348 11.4147 7.74344 11.1987L4.57861 9.30078L8.31788 14.6495L8.32387 14.6673L8.32708 14.6627Z" 
+      fill="currentColor"/>
+  </g>
+  <defs>
+    <clipPath id="bgblur_0_36_3335_clip_path" transform="translate(0 0)">
+      <path fill-rule="evenodd" clip-rule="evenodd" 
+        d="M4.97535 8.84062C4.78837 8.72766 4.69488 8.67117 4.67167 8.57716C4.64846 8.48314 4.70465 8.38858 4.81704 8.19944L7.94035 2.94346C8.11604 2.64782 8.20388 2.5 8.33349 2.5C8.46311 2.5 8.55094 2.64783 8.72661 2.94348L11.8492 8.19897C11.9617 8.38831 12.0179 8.48298 11.9946 8.57705C11.9714 8.67113 11.8777 8.72756 11.6904 8.84041L9.20805 10.3361C8.77914 10.5945 8.56469 10.7237 8.32818 10.7235C8.09167 10.7234 7.87737 10.5939 7.44877 10.335L4.97535 8.84062Z"/>
+    </clipPath>
+    <clipPath id="bgblur_1_36_3335_clip_path" transform="translate(-4.27812 -1.98223)">
+      <path fill-rule="evenodd" clip-rule="evenodd" 
+        d="M8.33265 2.28323L8.33293 2.28223L8.33308 2.28249L8.33312 2.28243V2.28256L12.0876 8.60143L12.0684 8.61294L12.0772 8.61699L8.3298 10.8656V10.8681L8.32772 10.8668L8.32564 10.8681V10.8656L4.57812 8.61699L4.59279 8.61023L4.57812 8.60143L8.33265 2.28323Z"/>
+    </clipPath>
+    <clipPath id="bgblur_2_36_3335_clip_path" transform="translate(-4.27861 -9.00078)">
+      <path fill-rule="evenodd" clip-rule="evenodd" 
+        d="M8.32708 14.6627L8.33029 14.6673V14.6581L12.0777 9.30078L8.91081 11.1989C8.55071 11.4147 8.10348 11.4147 7.74344 11.1987L4.57861 9.30078L8.31788 14.6495L8.32387 14.6673L8.32708 14.6627Z"/>
+    </clipPath>
+  </defs>
+</svg>

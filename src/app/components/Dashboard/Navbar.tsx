@@ -23,14 +23,14 @@ const Navbar = () => {
           Collection
         </Link>
         <Link
-          href="/portfolio"
+          href="/buy"
           className={
-            pathname === "/portfolio"
+            pathname === "/buy"
               ? "text-purple-500 transition-colors"
               : "text-white transition-colors"
           }
         >
-          Portfolio
+          Buy
         </Link>
       </nav>
     </header>

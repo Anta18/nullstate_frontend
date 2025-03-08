@@ -19,7 +19,7 @@ const HomePage: React.FC = () => {
     { imageSrc: "/images/nft_cat.png", title: "GK37", owners: 1987 },
   ];
   return (
-    <div className="min-h-screen overflow-auto text-[#E0D9F5] font-w95 custom-scrollbar">
+    <div className="min-h-screen overflow-auto text-[#E0D9F5] font-w95 custom-scrollbar bg-black">
       <div className="relative bg-gradient-to-b from-[#5539A8] via-[rgba(116,14,63,40%)] to-black">
         <ImageOverlay />
         <Navbar />

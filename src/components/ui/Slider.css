@@ -1,0 +1,69 @@
+/* Basic slider styling */
+.slider {
+    -webkit-appearance: none; /* Remove default styling in Chrome/Safari */
+    width: 100%;
+    height: 6px;
+    background: #333; /* Fallback for older browsers */
+    border-radius: 9999px;
+    outline: none;
+    cursor: pointer;
+  }
+  
+  /* ====== Chrome / Safari / Edge ====== */
+  .slider::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 6px;
+    border-radius: 9999px;
+    /* 
+      Use a gradient that transitions from white to #333 
+      at a percentage based on our custom property (--val).
+      If --val=50, then the first half (0-50%) is white, 
+      and the remaining half (50-100%) is #333.
+    */
+    background: linear-gradient(
+      to right,
+      #fff 0%,
+      #fff calc(var(--val) * 1%),
+      #333 calc(var(--val) * 1%),
+      #333 100%
+    );
+  }
+  
+  /* The "knob" or "thumb" */
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 16px;
+    width: 16px;
+    border-radius: 9999px;
+    background: #000;            /* Black knob */
+    border: 2px solid #888;      /* Subtle border */
+    margin-top: -5px;            /* Centers the knob vertically on the track */
+    cursor: pointer;
+  }
+  
+  /* ====== Firefox ====== */
+  .slider::-moz-range-track {
+    width: 100%;
+    height: 6px;
+    border-radius: 9999px;
+    background: #333; /* Base track color for Firefox */
+    cursor: pointer;
+  }
+  
+  /* The filled portion in Firefox */
+  .slider::-moz-range-progress {
+    background: #fff; /* White fill on the left side */
+    height: 6px;
+    border-radius: 9999px;
+  }
+  
+  /* Firefox knob */
+  .slider::-moz-range-thumb {
+    height: 16px;
+    width: 16px;
+    border-radius: 9999px;
+    background: #000;
+    border: 2px solid #888;
+    cursor: pointer;
+  }
+  

@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
 import TrendingNFT from "../components/TrendingNFT/TrendingNFT";
-import Navbar from "../components/Navbar/Navbar";
 import NFTCollection from "../../data/TableData";
 import PerformanceCard from "../components/Collection/PerformanceCard";
 
@@ -19,7 +18,7 @@ const Collection = () => {
     },
   };
   return (
-    <>
+    <div className="w-full bg-black">
       <PerformanceCard
         currentValue={dashboardData.currentValue}
         invested={dashboardData.invested}
@@ -27,7 +26,7 @@ const Collection = () => {
         stats={dashboardData.stats}
       />
       <TrendingNFT data={NFTCollection} />
-    </>
+    </div>
   );
 };
 
