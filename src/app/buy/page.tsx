@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import ProfileStats from "../components/Buy/ProfileStats";
 import TrendUp from "../../assets/icons/TrendUp.svg";
 import BuyTable from "../components/Buy/BuyTable";
@@ -8,28 +8,6 @@ import FooterControls from "../components/Buy/FooterControls";
 import ActivityTable from "../components/Buy/ActivityTable";
 
 const NFTCollectionPage: React.FC = () => {
-  const [collectionData] = useState({
-    name: "Azuki",
-    floorPrice: "12.7 ETH",
-    change24h: "+2.3%",
-    change7d: "+5.1%",
-    volume24h: "432 ETH",
-    owners: 4223,
-    items: "10K",
-    listed: 2120,
-    marketCap: "127K ETH",
-  });
-
-  // Activity data
-  const [activityItems] = useState(
-    Array.from({ length: 5 }, (_, i) => ({
-      id: i,
-      description: `Bought Azuki #${3000 + i}`,
-      timeAgo: "2h ago",
-      amount: "+10.5 ETH",
-    }))
-  );
-
   return (
     <div className="h-[calc(100vh-64px)] bg-black text-white font-sans flex flex-col">
       <ProfileStats />

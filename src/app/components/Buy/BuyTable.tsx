@@ -1,5 +1,6 @@
 import { Checkbox } from "@/app/components/ui/checkbox";
-import { Check, Clock } from "lucide-react";
+import { Clock } from "lucide-react";
+import Eth from "../../../assets/icons/Eth.svg";
 import React from "react";
 
 interface TableItem {
@@ -22,7 +23,7 @@ const items: TableItem[] = [
     rarity: 3373,
     buyNow: "0.026",
     lastSale: "3.07",
-    topBid: "$2.91",
+    topBid: "2.91",
     owner: "3DFD5C",
     held: 1,
     timeAgo: "4m ago",
@@ -34,7 +35,7 @@ const items: TableItem[] = [
     rarity: 3373,
     buyNow: "0.026",
     lastSale: "3.07",
-    topBid: "$2.91",
+    topBid: "2.91",
     owner: "3DFD5C",
     held: 1,
     timeAgo: "4m ago",
@@ -46,7 +47,7 @@ const items: TableItem[] = [
     rarity: 3373,
     buyNow: "0.026",
     lastSale: "3.07",
-    topBid: "$2.91",
+    topBid: "2.91",
     owner: "3DFD5C",
     held: 1,
     timeAgo: "4m ago",
@@ -58,7 +59,7 @@ const items: TableItem[] = [
     rarity: 3373,
     buyNow: "0.026",
     lastSale: "3.07",
-    topBid: "$2.91",
+    topBid: "2.91",
     owner: "3DFD5C",
     held: 1,
     timeAgo: "4m ago",
@@ -70,7 +71,7 @@ const items: TableItem[] = [
     rarity: 3373,
     buyNow: "0.026",
     lastSale: "3.07",
-    topBid: "$2.91",
+    topBid: "2.91",
     owner: "3DFD5C",
     held: 1,
     timeAgo: "4m ago",
@@ -82,7 +83,7 @@ const items: TableItem[] = [
     rarity: 3373,
     buyNow: "0.026",
     lastSale: "3.07",
-    topBid: "$2.91",
+    topBid: "2.91",
     owner: "3DFD5C",
     held: 1,
     timeAgo: "4m ago",
@@ -94,7 +95,7 @@ const items: TableItem[] = [
     rarity: 3373,
     buyNow: "0.026",
     lastSale: "3.07",
-    topBid: "$2.91",
+    topBid: "2.91",
     owner: "3DFD5C",
     held: 1,
     timeAgo: "4m ago",
@@ -106,7 +107,7 @@ const items: TableItem[] = [
     rarity: 3373,
     buyNow: "0.026",
     lastSale: "3.07",
-    topBid: "$2.91",
+    topBid: "2.91",
     owner: "3DFD5C",
     held: 1,
     timeAgo: "4m ago",
@@ -118,7 +119,7 @@ const items: TableItem[] = [
     rarity: 3373,
     buyNow: "0.026",
     lastSale: "3.07",
-    topBid: "$2.91",
+    topBid: "2.91",
     owner: "3DFD5C",
     held: 1,
     timeAgo: "4m ago",
@@ -130,7 +131,7 @@ const items: TableItem[] = [
     rarity: 3373,
     buyNow: "0.026",
     lastSale: "3.07",
-    topBid: "$2.91",
+    topBid: "2.91",
     owner: "3DFD5C",
     held: 1,
     timeAgo: "4m ago",
@@ -142,7 +143,7 @@ const items: TableItem[] = [
     rarity: 3373,
     buyNow: "0.026",
     lastSale: "3.07",
-    topBid: "$2.91",
+    topBid: "2.91",
     owner: "3DFD5C",
     held: 1,
     timeAgo: "4m ago",
@@ -154,7 +155,7 @@ const items: TableItem[] = [
     rarity: 3373,
     buyNow: "0.026",
     lastSale: "3.07",
-    topBid: "$2.91",
+    topBid: "2.91",
     owner: "3DFD5C",
     held: 1,
     timeAgo: "4m ago",
@@ -166,7 +167,7 @@ const items: TableItem[] = [
     rarity: 3373,
     buyNow: "0.026",
     lastSale: "3.07",
-    topBid: "$2.91",
+    topBid: "2.91",
     owner: "3DFD5C",
     held: 1,
     timeAgo: "4m ago",
@@ -235,13 +236,19 @@ const BuyTable: React.FC = () => {
                   {item.rarity}
                 </td>
                 <td className="px-2 py-3 text-sm whitespace-nowrap border-gray-500 rounded-lg">
-                  {item.buyNow} ETH
+                  <span className="flex">
+                    <Eth className="h-3 mt-1 mr-1" />
+                    {item.buyNow}
+                  </span>
                 </td>
                 <td className="px-2 py-3 text-sm whitespace-nowrap">
                   {item.lastSale}
                 </td>
                 <td className="px-2 py-3 text-sm whitespace-nowrap">
-                  {item.topBid}
+                  <span className="flex">
+                    <Eth className="h-3 mt-1 mr-1" />
+                    {item.topBid}
+                  </span>
                 </td>
                 <td className="px-2 py-3 text-sm whitespace-nowrap">
                   {item.owner}

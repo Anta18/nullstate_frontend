@@ -1,15 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import SweepSlider from "./SweepSlider";
 import Switch from "@/components/ui/switch";
 import EthIcon from "../../../assets/icons/u-eth.svg";
 
 const FooterControls = () => {
-  const [optimizeSweep, setOptimizeSweep] = useState(true);
-
-  const toggleOptimizeSweep = () => {
-    setOptimizeSweep(!optimizeSweep);
-  };
-
   return (
     <div className="flex items-center space-x-4 w-full bg-black px-1 pt-1 text-md">
       <div className="bg-black border border-purple-500 rounded-lg px-6 py-1">
