@@ -1,5 +1,5 @@
 import React from "react";
-import Broom from "../../../assets/icons/Broom.svg";
+import Broom from "../../../assets/icons/broom.svg";
 import Slider from "@/components/ui/slider";
 
 const SweepSlider = () => {
