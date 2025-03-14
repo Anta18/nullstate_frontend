@@ -40,9 +40,9 @@ const Navbar = () => {
           Collection
         </Link>
         <Link
-          href="/buy"
+          href="/mint"
           className={
-            pathname === "/buy"
+            pathname === "/mint"
               ? "text-purple-500 transition-colors"
               : "text-white transition-colors"
           }
