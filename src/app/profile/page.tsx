@@ -23,7 +23,7 @@ const CryptoWalletInterface: React.FC = () => {
   const [selectedFilter, setSelectedFilter] = useState("All activity");
 
   return (
-    <div className="bg-black text-white min-h-screen p-4">
+    <div className="bg-black text-white min-h-screen p-4 pt-16">
       <div className="flex items-center gap-2 mb-4">
         <span className="text-gray-400 text-sm">Wallet address</span>
         <span className="text-gray-300 text-sm">{walletData.address}</span>

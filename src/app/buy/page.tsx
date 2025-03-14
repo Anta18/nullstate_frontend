@@ -9,7 +9,7 @@ import ActivityTable from "../components/Buy/ActivityTable";
 
 const NFTCollectionPage: React.FC = () => {
   return (
-    <div className="h-[calc(100vh-64px)] bg-black text-white font-sans flex flex-col">
+    <div className="h-screen bg-black text-white font-sans flex flex-col pt-16">
       <ProfileStats />
 
       <div className="flex flex-1 overflow-hidden">

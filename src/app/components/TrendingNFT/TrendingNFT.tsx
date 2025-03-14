@@ -2,15 +2,17 @@
 import React from "react";
 import TabMenu from "./TabMenu";
 import Eth from "../../../assets/icons/Eth.svg";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 interface NftCollection {
   collectionName: string;
   floorPrice: string;
   topBid: string;
-  dayFloorChange: string; // 24h floor
-  weekFloorChange: string; // 7D floor
-  dayVolume: string; // 24h volume
-  weekVolume: string; // 7D volume
+  dayFloorChange: string;
+  weekFloorChange: string;
+  dayVolume: string;
+  weekVolume: string;
   owners: string;
   supply: string;
   imageUrl?: string;
@@ -18,9 +20,17 @@ interface NftCollection {
 
 interface TrendingNFTProps {
   data: NftCollection[];
+  limit?: number; // optional prop to limit the number of rows
 }
 
-const TrendingNFT: React.FC<TrendingNFTProps> = ({ data }) => {
+const TrendingNFT: React.FC<TrendingNFTProps> = ({ data, limit }) => {
+  const router = useRouter();
+  const displayedData = limit ? data.slice(0, limit) : data;
+
+  const handleRowClick = () => {
+    router.push("/collection");
+  };
+
   return (
     <>
       <TabMenu />
@@ -41,10 +51,11 @@ const TrendingNFT: React.FC<TrendingNFTProps> = ({ data }) => {
             </tr>
           </thead>
           <tbody>
-            {data.map((item, idx) => (
+            {displayedData.map((item, idx) => (
               <tr
                 key={idx}
-                className="border-b border-gray-800 hover:bg-gray-900 transition-colors"
+                onClick={handleRowClick}
+                className="border-b border-gray-800 hover:bg-gray-900 transition-colors cursor-pointer"
               >
                 <td className="py-4 pl-2 flex items-center space-x-3">
                   {item.imageUrl ? (
@@ -111,6 +122,16 @@ const TrendingNFT: React.FC<TrendingNFTProps> = ({ data }) => {
           </tbody>
         </table>
       </div>
+      {/* Render "View More" button only if limit is set and there are more rows */}
+      {limit && data.length > limit && (
+        <div className="flex justify-center mt-4">
+          <Link href="/collections">
+            <button className="bg-black border-[1px] border-gray-800 hover:bg-[#6A4FB2] text-white font-bold py-2 px-4 rounded transition-colors">
+              View All
+            </button>
+          </Link>
+        </div>
+      )}
     </>
   );
 };
