@@ -117,7 +117,9 @@ const NFTMintPage: React.FC = () => {
                 <select
                   name="collection"
                   className="w-full bg-[#131419] border-[1px] border-[#272934] text-[#969AAE] py-3 px-4 pr-8 rounded-[4px] appearance-none focus:outline-none focus:ring-2 focus:ring-purple-600"
-                  onChange={(e) => handleInputChange(e as any)}
+                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                    handleInputChange(e)
+                  }
                 >
                   <option>Select a Collection</option>
                 </select>
