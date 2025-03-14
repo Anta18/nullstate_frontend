@@ -2,22 +2,42 @@
 import React, { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { useFuel, useIsConnected, useWallet } from "@fuels/react";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
+  const { wallet } = useWallet();
+  const { fuel } = useFuel();
+  const { isConnected } = useIsConnected();
+  const [address, setAddress] = useState<string | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
-      // When scrollY is greater than 0, set scrolled to true
       setScrolled(window.scrollY > 0);
     };
 
     window.addEventListener("scroll", handleScroll);
-
-    // Clean up the event listener on component unmount
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const handleConnect = async () => {
+    if (!fuel) {
+      console.error("Fuel not connected");
+      return;
+    }
+    try {
+      await fuel.connect();
+      const accounts = await fuel.accounts();
+      if (accounts.length > 0) {
+        const addr = accounts[0];
+        const sliceAddress = addr.slice(0, 6) + "..." + addr.slice(-4);
+        setAddress(sliceAddress);
+      }
+    } catch (error) {
+      console.error("Error connecting wallet", error);
+    }
+  };
 
   return (
     <header
@@ -50,6 +70,14 @@ const Navbar = () => {
           Mint
         </Link>
       </nav>
+      <div className="ml-auto">
+        <button
+          onClick={handleConnect}
+          className="bg-white text-purple-600 py-2 px-5 rounded-sm font-mono cursor-pointer"
+        >
+          {isConnected && address ? address : "Connect Wallet"}
+        </button>
+      </div>
     </header>
   );
 };
