@@ -31,6 +31,7 @@ const Navbar = () => {
       const accounts = await fuel.accounts();
       if (accounts.length > 0) {
         const addr = accounts[0];
+        // Create a truncated address: first 6 characters, ellipsis, and last 4 characters.
         const sliceAddress = addr.slice(0, 6) + "..." + addr.slice(-4);
         setAddress(sliceAddress);
       }
@@ -71,12 +72,20 @@ const Navbar = () => {
         </Link>
       </nav>
       <div className="ml-auto">
-        <button
-          onClick={handleConnect}
-          className="bg-white text-purple-600 py-2 px-5 rounded-sm font-mono cursor-pointer"
-        >
-          {isConnected && address ? address : "Connect Wallet"}
-        </button>
+        {isConnected && address ? (
+          <Link href="/profile">
+            <button className="bg-transparent border border-purple-600 text-gray-500 py-2 px-5 rounded-sm font-mono cursor-pointer">
+              {address}
+            </button>
+          </Link>
+        ) : (
+          <button
+            onClick={handleConnect}
+            className="bg-white text-purple-600 py-2 px-5 rounded-sm font-mono cursor-pointer"
+          >
+            Connect Wallet
+          </button>
+        )}
       </div>
     </header>
   );
