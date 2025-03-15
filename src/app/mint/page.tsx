@@ -2,6 +2,8 @@
 import React, { useState, useRef, useMemo } from "react";
 import { Afacad } from "next/font/google";
 import { useFuel, useIsConnected } from "@fuels/react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const afacad = Afacad({ subsets: ["latin"], weight: ["400", "600", "700"] });
 
@@ -12,6 +14,7 @@ import { useWallet } from "@fuels/react";
 import { Contract, getMintedAssetId } from "fuels";
 import { computeAssetId } from "@/utils/computeAssetId";
 import createNFT from "@/Backend/CreateNFT";
+
 const NFT_CONTRACT_ID =
   "0xbcd6b6790d35474a72091db0f0efb570bbf51228d680f5322011dc566c5ca16e";
 
@@ -35,9 +38,6 @@ const NFTMintPage: React.FC = () => {
 
   const [uploading, setUploading] = useState(false);
   const [minting, setMinting] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
-
 
   const isFormValid = useMemo(() => {
     return (
@@ -49,15 +49,12 @@ const NFTMintPage: React.FC = () => {
     );
   }, [formData, selectedFile]);
 
-  let buttonText = "MINT NFT";
-  if (uploading) {
-    buttonText = "Uploading...";
-  } else if (minting) {
-    buttonText = "Minting...";
-  } else if (success) {
-    buttonText = "Mint";
-  }
-  
+  // Button text logic: When loading, display spinner + text; otherwise normal text.
+  const buttonText = uploading
+    ? "Uploading..."
+    : minting
+    ? "Minting..."
+    : "Mint NFT";
   const isButtonDisabled = !isFormValid || uploading || minting;
 
   const handleInputChange = (
@@ -96,22 +93,17 @@ const NFTMintPage: React.FC = () => {
   };
 
   const handleMintNFT = async () => {
-    setError("");
-    setSuccess("");
-
+    // Check wallet connection
     if (!wallet) {
-      console.log("Wallet not connected!");
+      toast.error("Wallet not connected!");
       throw new Error("Wallet not connected!");
-
     }
-   
+
     if (!isFormValid) {
-      setError("Please fill in all fields and upload an image");
+      toast.error("Please fill in all fields and upload an image");
       return;
     }
 
-
-    
     try {
       let ipfsUrl = "";
       if (selectedFile) {
@@ -135,25 +127,23 @@ const NFTMintPage: React.FC = () => {
         },
       };
 
-
       const tx = await contract.functions
         .mint(recipientIdentity, subId, 1)
         .txParams({ gasLimit: 10_000_000 })
         .call();
 
       const { transactionResponse } = await tx.waitForResult();
-      const transactionSummary = await transactionResponse.getTransactionSummary();
+      const transactionSummary =
+        await transactionResponse.getTransactionSummary();
 
       console.log("Transaction summary:", transactionSummary);
-      
 
       const mintedAssetId = await getMintedAssetId(NFT_CONTRACT_ID, subId);
       console.log("Minted assetId:", mintedAssetId);
 
-     
-      if(transactionSummary.status !== "success"){
+      if (transactionSummary.status !== "success") {
         setMinting(false);
-        setError("Failed to mint NFT");
+        toast.error("Failed to mint NFT");
         return;
       }
 
@@ -166,11 +156,11 @@ const NFTMintPage: React.FC = () => {
         nftOwnerAddress: wallet.address.toString(),
         nftCreatorAddress: wallet.address.toString(),
         nftStatus: "Minted",
-      }
+      };
       await createNFT(entry);
       setMinting(false);
 
-      setSuccess("NFT minted successfully!");
+      toast.success("NFT minted successfully!");
       setFormData({
         name: "",
         description: "",
@@ -181,7 +171,9 @@ const NFTMintPage: React.FC = () => {
       setPreviewUrl(null);
     } catch (error) {
       setUploading(false);
-      setError("Failed to upload file to IPFS");
+      setMinting(false);
+      toast.error("Failed to upload file to IPFS");
+      console.error(error);
       return;
     }
     console.log("Minting NFT with data:", formData, selectedFile);
@@ -251,7 +243,7 @@ const NFTMintPage: React.FC = () => {
                 type="text"
                 name="name"
                 placeholder="Enter Name"
-                className="w-full bg-[#131419] border-[1px] border-[#272934] text-white py-3 px-4 rounded-[4px] focus:outline-none focus:ring-2 focus:ring-purple-600"
+                className="w-full bg-[#131419] border border-[#272934] text-white py-3 px-4 rounded-[4px] focus:outline-none focus:ring-2 focus:ring-purple-600"
                 onChange={handleInputChange}
                 value={formData.name}
               />
@@ -262,7 +254,7 @@ const NFTMintPage: React.FC = () => {
                 type="text"
                 name="description"
                 placeholder="Enter Description"
-                className="w-full bg-[#131419] border-[1px] border-[#272934] text-white py-3 px-4 rounded-[4px] focus:outline-none focus:ring-2 focus:ring-purple-600"
+                className="w-full bg-[#131419] border border-[#272934] text-white py-3 px-4 rounded-[4px] focus:outline-none focus:ring-2 focus:ring-purple-600"
                 onChange={handleInputChange}
                 value={formData.description}
               />
@@ -273,7 +265,7 @@ const NFTMintPage: React.FC = () => {
                 type="text"
                 name="category"
                 placeholder="Enter Category"
-                className="w-full bg-[#131419] border-[1px] border-[#272934] text-white py-3 px-4 rounded-[4px] focus:outline-none focus:ring-2 focus:ring-purple-600"
+                className="w-full bg-[#131419] border border-[#272934] text-white py-3 px-4 rounded-[4px] focus:outline-none focus:ring-2 focus:ring-purple-600"
                 onChange={handleInputChange}
                 value={formData.category}
               />
@@ -284,7 +276,7 @@ const NFTMintPage: React.FC = () => {
                 type="text"
                 name="externalLink"
                 placeholder="Price"
-                className="w-full bg-[#131419] border-[1px] border-[#272934] text-white py-3 px-4 rounded-[4px] focus:outline-none focus:ring-2 focus:ring-purple-600"
+                className="w-full bg-[#131419] border border-[#272934] text-white py-3 px-4 rounded-[4px] focus:outline-none focus:ring-2 focus:ring-purple-600"
                 value={formData.price ? `${formData.price}` : ""}
                 onChange={handlePriceChange}
               />
@@ -292,14 +284,42 @@ const NFTMintPage: React.FC = () => {
             <button
               type="button"
               onClick={handleMintNFT}
-              className="w-full bg-[#4023B5] hover:bg-purple-700 text-white font-bold py-3 px-4 rounded-[4px] transition duration-300"
               disabled={isButtonDisabled}
+              className={`w-full font-bold py-3 px-4 rounded-[4px] transition duration-300 
+                ${
+                  isButtonDisabled
+                    ? "bg-gray-500 cursor-not-allowed"
+                    : "bg-[#4023B5] hover:bg-purple-700"
+                } flex justify-center items-center`}
             >
+              {(uploading || minting) && (
+                <svg
+                  className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                  ></path>
+                </svg>
+              )}
               {buttonText}
             </button>
           </form>
         </div>
       </div>
+      <ToastContainer position="top-right" autoClose={5000} />
     </div>
   );
 };
