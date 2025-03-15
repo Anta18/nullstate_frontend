@@ -25,7 +25,7 @@ const CreatorBanner: React.FC<CreatorBannerProps> = ({ onApplyClick }) => {
 
       <button
         onClick={onApplyClick}
-        className="text-white border border-white px-6 py-2 mt-2 md:mt-0 hover:bg-white hover:text-black transition-colors"
+        className="text-[#E0CFFE] border border-[#E0CFFE] px-6 py-2 mt-2 md:mt-0 hover:bg-white hover:text-black transition-colors"
       >
         Apply Now
       </button>

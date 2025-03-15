@@ -102,6 +102,10 @@
   font-family: 'RobitTrial', sans-serif;
 }
 
+.font-afacad {
+  font-family: 'Afacad', sans-serif;
+}
+
 /* Custom scrollbar styling for the left side */
 .custom-scrollbar::-webkit-scrollbar {
   overflow: overlay;

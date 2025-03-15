@@ -31,7 +31,10 @@ const ImageOverlay = () => {
           className="object-contain bg-cover bg-no-repeat mix-blend-color-dodge opacity-80"
         />
       </div> */}
-      <div className="bg-[url('/images/shape.png')] w-[600px] h-[744px] absolute top-12 left-0 bg-lightgray bg-cover bg-no-repeat bg-center mix-blend-soft-light flex-shrink-0"></div>
+      <img
+        className="absolute top-16 w-[750px] left-0 bg-lightgray bg-cover bg-no-repeat bg-center mix-blend-soft-light"
+        src="/images/image.png"
+      ></img>
     </>
   );
 };

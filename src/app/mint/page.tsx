@@ -185,7 +185,7 @@ const NFTMintPage: React.FC = () => {
 
   return (
     <div
-      className={`${afacad.className} relative min-h-screen bg-black text-white pt-16`}
+      className={`${afacad.className} relative min-h-screen bg-black text-white pt-20`}
     >
       <div className={`${showModal ? "filter blur-sm" : ""}`}>
         <div className="flex w-full max-w-6xl p-8 gap-24 mx-auto">

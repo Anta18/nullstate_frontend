@@ -25,7 +25,7 @@ const HomePage: React.FC = () => {
 
         <section className="relative flex flex-col items-center justify-center text-center pt-10 pb-16 px-4">
           <div className="w-full mt-56 flex justify-end mr-16">
-            <h1 className="text-[120px] leading-tight mb-60 text-right max-w-3xl">
+            <h1 className="text-[120px] leading-tight mb-48 text-right max-w-3xl">
               nullstate
             </h1>
           </div>
