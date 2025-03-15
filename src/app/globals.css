@@ -54,6 +54,40 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: 'RobitTrial';
+  src: url('/fonts/robittrial-regular.otf') format('otf');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'RobitTrial';
+  src: url('/fonts/robittrial-bold.otf') format('otf');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'RobitTrial';
+  src: url('/fonts/robittrial-light.otf') format('otf');
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'RobitTrial';
+  src: url('/fonts/robittrial-medium.otf') format('otf');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'RobitTrial';
+  src: url('/fonts/robittrial-dark.otf') format('otf');
+  font-weight: 900;
+  font-style: normal;
+}
 
 
 .font-w95 {
@@ -62,6 +96,10 @@
 
 .font-roboto-mono {
   font-family: 'Roboto Mono', monospace;
+}
+
+.font-robit {
+  font-family: 'RobitTrial', sans-serif;
 }
 
 /* Custom scrollbar styling for the left side */

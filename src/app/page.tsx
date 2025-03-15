@@ -8,10 +8,9 @@ import ExperiencePage from "./components/Dashboard/ExperiencePage";
 
 const HomePage: React.FC = () => {
   const nftCollection = [
-    { imageSrc: "/images/nft_cat.png", title: "GK34", owners: 4224 },
-    { imageSrc: "/images/nft_cat.png", title: "GK35", owners: 3201 },
-    { imageSrc: "/images/nft_cat.png", title: "GK36", owners: 2100 },
-    { imageSrc: "/images/nft_cat.png", title: "GK37", owners: 1987 },
+    { imageSrc: "/images/image 223.png", title: "GK36" },
+    { imageSrc: "/images/image 221.png", title: "GK34" },
+    { imageSrc: "/images/image 196.png", title: "GK35" },
   ];
   // const popularCollection = [
   //   { imageSrc: "/images/nft_cat.png", title: "GK34", owners: 4224 },
@@ -33,34 +32,20 @@ const HomePage: React.FC = () => {
         </section>
         <CreatorBanner />
         <section className="px-4 py-8 m-16">
-          <h2 className="text-[52px] font-bold mb-6 text-left">
-            FEATURED COLLECTION
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 max-w-6xl">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
             {nftCollection.map((nft, index) => (
-              <NFTCard
-                key={index}
-                imageSrc={nft.imageSrc}
-                title={nft.title}
-                owners={nft.owners}
-              />
+              <NFTCard key={index} imageSrc={nft.imageSrc} title={nft.title} />
             ))}
           </div>
         </section>
       </div>
 
-      <div className="mb-8 bg-black">
-        <h1 className="text-3xl font-bold tracking-wide font-w95 text-[#E0D9F5] px-6">
-          TRENDING NFT
-        </h1>
-      </div>
+      <div className="mb-8 bg-black"></div>
       <TrendingNFT data={NFTCollection} limit={10} />
       <ExperiencePage />
 
       {/* FOOTER */}
-      <footer className="py-6 text-center text-sm text-gray-500">
-        © 2025 {"{}"}State. All rights reserved.
-      </footer>
+      {/* <img src="/images/Footer.svg" /> */}
     </div>
   );
 };

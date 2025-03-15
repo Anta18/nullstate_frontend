@@ -18,13 +18,13 @@ const Collection = () => {
     },
   };
   return (
-    <div className="w-full bg-black pt-16">
-      <PerformanceCard
+    <div className="w-full bg-black pt-20">
+      {/* <PerformanceCard
         currentValue={dashboardData.currentValue}
         invested={dashboardData.invested}
         pnl={dashboardData.pnl}
         stats={dashboardData.stats}
-      />
+      /> */}
       <TrendingNFT data={NFTCollection} />
     </div>
   );
