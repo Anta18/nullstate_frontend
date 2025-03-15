@@ -13,7 +13,7 @@ import NFTABI from "../../ABI's/NFT/NFT-contract-abi.json";
 import { generateRandomSubId } from "@/utils/randomSubId";
 import { useWallet } from "@fuels/react";
 import { Contract, getMintedAssetId } from "fuels";
-import createNFT from "@/Backend/CreateNFT";
+
 
 const NFT_CONTRACT_ID =
   "0xbcd6b6790d35474a72091db0f0efb570bbf51228d680f5322011dc566c5ca16e";
@@ -22,6 +22,16 @@ const PINATA_API_KEY = "955f973ebf3cb0da7c61";
 const PINATA_SECRET_API_KEY =
   "124f11ab548d375df0650bf325b15ea131f35ae138be8598708d6e573de16cd3";
 
+interface NFT {
+  nftId: string;
+  nftName: string;
+  nftDescription: string;
+  nftImage: string;
+  nftPrice: string;
+  nftOwnerAddress: string;
+  nftCreatorAddress: string;
+  nftStatus: string;
+}
 const NFTMintPage: React.FC = () => {
   const { wallet } = useWallet();
   const { fuel } = useFuel();
@@ -53,8 +63,8 @@ const NFTMintPage: React.FC = () => {
   const buttonText = uploading
     ? "Uploading..."
     : minting
-    ? "Minting..."
-    : "Mint NFT";
+      ? "Minting..."
+      : "Mint NFT";
   const isButtonDisabled = !isFormValid || uploading || minting;
 
   const handleInputChange = (
@@ -98,6 +108,28 @@ const NFTMintPage: React.FC = () => {
     }
     setShowModal(true);
   };
+  async function CreateNftOnServer(nftData:NFT) {
+    try {
+      const response = await fetch("/api/create-user-nft", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(nftData),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to create NFT on server");
+      }
+      const data = await response.json();
+      console.log("NFT created on server:", data);
+      return data;
+      
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+
+  }
 
   const handleConfirmMint = async () => {
     if (!wallet) {
@@ -158,7 +190,8 @@ const NFTMintPage: React.FC = () => {
         nftCreatorAddress: wallet.address.toString(),
         nftStatus: "Minted",
       };
-      await createNFT(entry);
+      
+      await CreateNftOnServer(entry);
       setMinting(false);
 
       toast.success("NFT minted successfully!");

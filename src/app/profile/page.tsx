@@ -1,5 +1,8 @@
 "use client";
-import React, { useState } from "react";
+import { getUserNFTs } from "@/Backend/GetUserNFT";
+import { useIsConnected, useWallet } from "@fuels/react";
+
+import React, { useEffect, useState } from "react";
 import ProfileCard from "../components/Profile/ProfileCard";
 import WalletInfoCard from "../components/Profile/WalletInfoCard";
 import TransactionDistributionChart from "../components/Profile/TransactionDistributionChart";
@@ -19,9 +22,55 @@ const typeColors: Record<string, string> = {
 
 const filterOptions = ["All activity", "Transfers", "NFTs", "dApps"];
 
-const CryptoWalletInterface: React.FC = () => {
-  const [selectedFilter, setSelectedFilter] = useState("All activity");
+interface NFT {
+  id: number;
+  nftId: string;
+  nftName: string;
+  nftDescription: string;
+  nftImage: string;
+  nftPrice: string;
+  nftOwnerAddress: string;
+  nftCreatorAddress: string;
+  nftStatus: string;
+}
 
+
+const CryptoWalletInterface: React.FC = () => {
+  const {wallet} = useWallet();
+  const { isConnected } = useIsConnected();
+  const [address, setAddress] = useState("");
+  const [userNFTs, setUserNFTs] = useState<NFT[]>([]);
+  const [selectedFilter, setSelectedFilter] = useState("All activity");
+  
+
+  useEffect(() => {
+    if(!isConnected || !wallet) return;
+    const userAddress = wallet.address.toString();
+    setAddress(userAddress);
+  }, [isConnected, wallet]);
+
+  useEffect(() => {
+    if(!address) return;
+
+    const fetchNFTs = async () =>{
+      try {
+        const res = await fetch(`/api/get-user-nfts?address=${address}`);
+        if(!res.ok) {
+          console.error("Failed to fetch user NFTs");
+          return;
+        }
+        const data:[] = await res.json();
+        console.log("NFT are",data);
+        setUserNFTs(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchNFTs();
+    
+  }, [address]);
+
+ 
   return (
     <div className="bg-black text-white min-h-screen p-4 pt-16">
       <div className="flex items-center gap-2 mb-4">

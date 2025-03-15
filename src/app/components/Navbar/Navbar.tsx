@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { useFuel, useIsConnected, useWallet } from "@fuels/react";
+import { useFuel, useIsConnected, useAccounts,  useWallet, useConnectUI,useDisconnect } from "@fuels/react";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -10,7 +10,9 @@ const Navbar = () => {
   const { wallet } = useWallet();
   const { fuel } = useFuel();
   const { isConnected } = useIsConnected();
-  const [address, setAddress] = useState<string | null>(null);
+  const { accounts } = useAccounts();
+  const { connect, theme, isConnecting } = useConnectUI();
+  const { disconnect } = useDisconnect();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -21,24 +23,10 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleConnect = async () => {
-    if (!fuel) {
-      console.error("Fuel not connected");
-      return;
-    }
-    try {
-      await fuel.connect();
-      const accounts = await fuel.accounts();
-      if (accounts.length > 0) {
-        const addr = accounts[0];
-        // Create a truncated address: first 6 characters, ellipsis, and last 4 characters.
-        const sliceAddress = addr.slice(0, 6) + "..." + addr.slice(-4);
-        setAddress(sliceAddress);
-      }
-    } catch (error) {
-      console.error("Error connecting wallet", error);
-    }
-  };
+  const address = accounts?.[0] ?? null;
+  const truncatedAddr = address
+    ? `${address.slice(0, 6)}...${address.slice(-4)}`
+    : null;
 
   return (
     <header
@@ -73,14 +61,21 @@ const Navbar = () => {
       </nav>
       <div className="ml-auto">
         {isConnected && address ? (
-          <Link href="/profile">
-            <button className="bg-transparent border border-purple-600 text-gray-500 py-2 px-5 rounded-sm font-mono cursor-pointer">
-              {address}
+          <>
+            <span className="bg-transparent border border-purple-600 text-gray-500 py-2 px-5 rounded-sm font-mono cursor-pointer">
+              {truncatedAddr}
+            </span>
+            <button
+              type="button"
+              onClick={() => disconnect()}
+              className="bg-gradient-to-r from-pink-500 to-red-500 hover:from-pink-600 hover:to-red-600 text-white py-2 px-5 rounded-sm font-mono cursor-pointer"
+            >
+              Disconnect
             </button>
-          </Link>
+          </>
         ) : (
           <button
-            onClick={handleConnect}
+          onClick={() => connect()}
             className="bg-[#E0CFFE] text-[#4023B5] py-2 px-5 rounded-sm font-mono cursor-pointer"
           >
             CONNECT WALLET
