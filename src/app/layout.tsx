@@ -28,6 +28,7 @@ export default function RootLayout({
     <html lang="en">
        <QueryClientProvider client={queryClient}>
       <FuelProvider 
+      theme="dark"
       fuelConfig={
         {
           connectors: [new FuelWalletConnector()],

@@ -17,7 +17,7 @@ datasource db {
 
 model NFTMinting{
   id Int @id @default(autoincrement())
-  nftId String
+  nftId String @unique
   nftName String
   nftDescription String
   nftImage String
@@ -27,4 +27,16 @@ model NFTMinting{
   nftStatus String
   nftCreatedAt DateTime @default(now())
   nftUpdatedAt DateTime @default(now())
+  predicateEntries  predicateEntry[]
+}
+
+
+model predicateEntry {
+  id  Int @id @default(autoincrement())
+  sellerId String 
+  predicateId String @unique
+  nftId String 
+  config Json
+  
+  NFTMinting NFTMinting @relation(fields: [nftId], references: [nftId])
 }
