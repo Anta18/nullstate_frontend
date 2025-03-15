@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useMemo } from "react";
 import { Afacad } from "next/font/google";
 import { useFuel, useIsConnected } from "@fuels/react";
 
@@ -9,9 +9,9 @@ import uploadFileToPinata from "@/utils/pinataUpload";
 import NFTABI from "../../ABI's/NFT/NFT-contract-abi.json";
 import { generateRandomSubId } from "@/utils/randomSubId";
 import { useWallet } from "@fuels/react";
-import { Contract } from "fuels";
+import { Contract, getMintedAssetId } from "fuels";
 import { computeAssetId } from "@/utils/computeAssetId";
-
+import createNFT from "@/Backend/CreateNFT";
 const NFT_CONTRACT_ID =
   "0xbcd6b6790d35474a72091db0f0efb570bbf51228d680f5322011dc566c5ca16e";
 
@@ -37,6 +37,28 @@ const NFTMintPage: React.FC = () => {
   const [minting, setMinting] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+
+
+  const isFormValid = useMemo(() => {
+    return (
+      formData.name.trim() !== "" &&
+      formData.description.trim() !== "" &&
+      formData.category.trim() !== "" &&
+      formData.price.trim() !== "" &&
+      selectedFile !== null
+    );
+  }, [formData, selectedFile]);
+
+  let buttonText = "MINT NFT";
+  if (uploading) {
+    buttonText = "Uploading...";
+  } else if (minting) {
+    buttonText = "Minting...";
+  } else if (success) {
+    buttonText = "Mint";
+  }
+  
+  const isButtonDisabled = !isFormValid || uploading || minting;
 
   const handleInputChange = (
     e: React.ChangeEvent<
@@ -74,11 +96,22 @@ const NFTMintPage: React.FC = () => {
   };
 
   const handleMintNFT = async () => {
-    if (!wallet) {
-      throw new Error("Wallet not connected!");
-    }
     setError("");
     setSuccess("");
+
+    if (!wallet) {
+      console.log("Wallet not connected!");
+      throw new Error("Wallet not connected!");
+
+    }
+   
+    if (!isFormValid) {
+      setError("Please fill in all fields and upload an image");
+      return;
+    }
+
+
+    
     try {
       let ipfsUrl = "";
       if (selectedFile) {
@@ -91,75 +124,66 @@ const NFTMintPage: React.FC = () => {
         setUploading(false);
       }
       console.log("IPFS URL:", ipfsUrl);
+      setMinting(true);
       const contract = new Contract(NFT_CONTRACT_ID, NFTABI, wallet);
 
       const subId = generateRandomSubId();
-      const assetId = computeAssetId(NFT_CONTRACT_ID, subId);
-      console.log("Random subId:", subId);
-      console.log("Computed assetId:", assetId);
-
-      const callArray = [];
-      if (formData.name) {
-        callArray.push(
-          contract.functions
-            .set_name(assetId, formData.name)
-            .txParams({ gasLimit: 10_000_000 })
-        );
-      }
-
-      if (formData.description) {
-        callArray.push(
-          contract.functions
-            .set_metadata(assetId, "description", { Raw: formData.description })
-            .txParams({ gasLimit: 10_000_000 })
-        );
-      }
-
-      if (formData.category) {
-        callArray.push(
-          contract.functions
-            .set_metadata(assetId, "category", { Raw: formData.category })
-            .txParams({ gasLimit: 10_000_000 })
-        );
-      }
-
-      if (formData.price) {
-        callArray.push(
-          contract.functions
-            .set_metadata(assetId, "price", { Raw: formData.price })
-            .txParams({ gasLimit: 10_000_000 })
-        );
-      }
-
-      if (ipfsUrl) {
-        callArray.push(
-          contract.functions
-            .set_metadata(assetId, "image_url", { Raw: ipfsUrl })
-            .txParams({ gasLimit: 10_000_000 })
-        );
-      }
 
       const recipientIdentity = {
         Address: {
           bits: wallet.address.toB256(),
         },
       };
-      callArray.push(
-        contract.functions
-          .mint(recipientIdentity, subId, 1)
-          .txParams({ gasLimit: 10_000_000 })
-      );
 
-      await contract.multiCall(callArray).call();
-      console.log("All calls succeeded in one transaction!");
+
+      const tx = await contract.functions
+        .mint(recipientIdentity, subId, 1)
+        .txParams({ gasLimit: 10_000_000 })
+        .call();
+
+      const { transactionResponse } = await tx.waitForResult();
+      const transactionSummary = await transactionResponse.getTransactionSummary();
+
+      console.log("Transaction summary:", transactionSummary);
+      
+
+      const mintedAssetId = await getMintedAssetId(NFT_CONTRACT_ID, subId);
+      console.log("Minted assetId:", mintedAssetId);
+
+     
+      if(transactionSummary.status !== "success"){
+        setMinting(false);
+        setError("Failed to mint NFT");
+        return;
+      }
+
+      const entry = {
+        nftId: mintedAssetId,
+        nftName: formData.name,
+        nftDescription: formData.description,
+        nftImage: ipfsUrl,
+        nftPrice: formData.price,
+        nftOwnerAddress: wallet.address.toString(),
+        nftCreatorAddress: wallet.address.toString(),
+        nftStatus: "Minted",
+      }
+      await createNFT(entry);
+      setMinting(false);
 
       setSuccess("NFT minted successfully!");
+      setFormData({
+        name: "",
+        description: "",
+        category: "",
+        price: "",
+      });
+      setSelectedFile(null);
+      setPreviewUrl(null);
     } catch (error) {
       setUploading(false);
       setError("Failed to upload file to IPFS");
       return;
     }
-
     console.log("Minting NFT with data:", formData, selectedFile);
   };
 
@@ -269,8 +293,9 @@ const NFTMintPage: React.FC = () => {
               type="button"
               onClick={handleMintNFT}
               className="w-full bg-[#4023B5] hover:bg-purple-700 text-white font-bold py-3 px-4 rounded-[4px] transition duration-300"
+              disabled={isButtonDisabled}
             >
-              MINT NFT
+              {buttonText}
             </button>
           </form>
         </div>
