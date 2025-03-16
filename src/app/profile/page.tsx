@@ -57,7 +57,11 @@ const NFTMarketplacePage = () => {
           return;
         }
         const data: NFT[] = await res.json();
-        const fetchedNFT: FetchedNFT[] = data.map((nft) => {
+        console.log("Data is ", data);
+        const onlyMinted = data.filter((nft) => nft.nftStatus === "Minted");
+        console.log("Only minted is ", onlyMinted);
+
+        const fetchedNFT: FetchedNFT[] = onlyMinted.map((nft) => {
           return {
             id: nft.id,
             title: nft.nftName,
@@ -65,7 +69,7 @@ const NFTMarketplacePage = () => {
             price: parseFloat(nft.nftPrice),
             tokenId: nft.id.toString(),
             imageUrl: nft.nftImage,
-            nftAssetId: nft.nftAssetId,
+            nftAssetId: nft.nftId,
           };
         });
         console.log("NFT are", fetchedNFT);

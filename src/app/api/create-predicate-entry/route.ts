@@ -1,7 +1,7 @@
 import {NextRequest,NextResponse} from "next/server";
-import createPredicateEntry from "@/Backend/CreatePredicate";
+import {createPredicateEntry, changeNFTStatus} from "@/Backend/CreatePredicate";
 
-async function POST(request:NextRequest){
+export async function POST(request:NextRequest){
     try {
         const body = await request.json();
         const {
@@ -17,7 +17,9 @@ async function POST(request:NextRequest){
             nftAssetId,
             config
         });
-        return  NextResponse.json(newEntry,{status: 201});
+        const updatedNFT = await changeNFTStatus(nftAssetId);
+
+        return  NextResponse.json(updatedNFT,{status: 200});
         
     } catch (error) {
         console.log("Error is ",error)

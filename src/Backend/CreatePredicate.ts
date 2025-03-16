@@ -18,7 +18,7 @@ export interface PredicateEntryType {
     }
 }
 
-export default async function createPredicateEntry(input: PredicateEntryType){
+export  async function createPredicateEntry(input: PredicateEntryType){
   try {
     console.log("input is ",input)
     const newEntry = await prisma.predicateEntry.create({
@@ -40,6 +40,22 @@ export default async function createPredicateEntry(input: PredicateEntryType){
   } catch (error) {
     console.log("Error is ",error)
   }
+}
+
+export  async function changeNFTStatus(nftId:string){
+    try {
+        const nft = await prisma.nFTMinting.update({
+            where:{
+                nftId
+            },
+            data:{
+                nftStatus:"Listed"
+            }
+        });
+        return nft
+    } catch (error) {
+        console.log("Error is ",error)
+    }
 }
 
 

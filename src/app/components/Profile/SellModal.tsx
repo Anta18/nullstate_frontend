@@ -45,16 +45,18 @@ const SellModal: React.FC<SellModalProps> = ({
   nftImage,
 }) => {
   const { wallet } = useWallet();
-  const [config, setConfig] = useState<{ [key: string]: string }>({
-    ASK_AMOUNT: "",
-    ASK_ASSET: "",
-  });
+  const [askAmount, setAskAmount] = useState("");
+  const [askAsset, setAskAsset] = useState("");
+
+  const [config, setConfig] = useState<ConfigType | null>(null);
+
 
   // Pricing states
   console.log(nftTitle);
   console.log(collectionName);
   console.log(rarity);
   console.log(nftImage);
+  console.log(nftAssetId)
   const [floorPrice, setFloorPrice] = useState("");
   const [topTraitPrice, setTopTraitPrice] = useState("");
   const [startingPrice, setStartingPrice] = useState("");
@@ -92,18 +94,15 @@ const SellModal: React.FC<SellModalProps> = ({
     }
   }
 
-  const initializeSellerPredicate = async () => {
+  const initializeSellerPredicate = async (finalConfig: ConfigType) => {
     if (!wallet) return;
 
-    const missingFields = Object.entries(config)
-      .filter(([key, value]) => !value.trim())
-      .map(([key, value]) => key);
-
-    if (missingFields.length > 0) {
-      console.log("Missing Fields", missingFields);
-      alert(`Please fill in all required fields: ${missingFields.join(", ")}`);
+    if (!finalConfig.ASK_AMOUNT.trim() || !finalConfig.ASK_ASSET.trim()) {
+      alert("Please fill in all required fields: ASK_AMOUNT, ASK_ASSET");
       return;
     }
+
+ 
     ///////These need to be asked and put//////
 
     const FEE_AMOUNT = "1";
@@ -118,8 +117,8 @@ const SellModal: React.FC<SellModalProps> = ({
       FEE_AMOUNT: bn(FEE_AMOUNT),
       FEE_ASSET: { bits: FEE_ASSET },
       TREASURY_ADDRESS: { bits: TREASURY_ADDRESS },
-      ASK_AMOUNT: bn(config.ASK_AMOUNT),
-      ASK_ASSET: { bits: config.ASK_ASSET },
+      ASK_AMOUNT: bn(finalConfig.ASK_AMOUNT),
+      ASK_ASSET: { bits: finalConfig.ASK_ASSET },
       RECEIVER: { bits: wallet.address.toString() }, // 64 chars
       NFT_ASSET_ID: { bits: nftAssetId },
     };
@@ -136,38 +135,50 @@ const SellModal: React.FC<SellModalProps> = ({
       const transferTx = await wallet.transfer(
         newPredicate.address,
         bn(1),
-        config.NFT_ASSET_ID,
+        finalConfig.NFT_ASSET_ID,
         { gasLimit: 100_000 }
       );
 
-      await transferTx.waitForResult();
+      const transactionResponse  = await transferTx.waitForResult();
+      console.log("Transaction Response is ",transactionResponse);
+      
       console.log("NFT successfully transferred to Predicate.");
+       if (transactionResponse.status !== "success") {
+              // setMinting(false);
+              // toast.error("Failed to mint NFT");
+              return;
+            }
 
       const entry = {
         sellerAddress: wallet.address.toString(),
         predicateAddress: newPredicate.address.toString(),
-        nftAssetId: config.NFT_ASSET_ID.toString(),
-        config: config as unknown as ConfigType,
+        nftAssetId: finalConfig.NFT_ASSET_ID.toString(),
+        config: finalConfig
       };
+      console.log("Creating Predicate Entry...");
 
       await createPredicateEntry(entry);
-      console.log("Predicate Initialized:", newPredicate);
-      console.log("Predicate Address:", newPredicate.address.toString());
-      const predicateBalance = await wallet.provider.getBalance(
-        newPredicate.address,
-        config.NFT_ASSET_ID
-      );
-      console.log("Predicate NFT Balance:", predicateBalance.toString());
+      return true;
     } catch (error) {
       console.error("Error initializing predicate:", error);
+      throw error;
     }
   };
 
-  const [askAmount, setAskAmount] = useState("");
-  const [askAsset, setAskAsset] = useState("");
 
-  const handleSubmit = () => {
-    setConfig({ askAmount, askAsset });
+  const handleSubmit = async () => {
+    const finalConfig: ConfigType = {
+      FEE_AMOUNT: "", 
+      FEE_ASSET: "",
+      TREASURY_ADDRESS: "",
+      ASK_AMOUNT: askAmount,
+      ASK_ASSET: askAsset,
+      NFT_ASSET_ID: nftAssetId,
+    };
+    setConfig(finalConfig);
+    await initializeSellerPredicate(finalConfig);
+    onClose();
+    console.log("END");
   };
 
   return (
