@@ -14,7 +14,7 @@ export async function GET(request : NextRequest){
             );
         }
         const nfts = await getUserNFTs(address);
-        return NextResponse.json({nfts});
+        return NextResponse.json(nfts);
         
     } catch (error) {
         console.error(error);
