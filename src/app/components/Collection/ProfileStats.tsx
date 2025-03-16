@@ -1,6 +1,7 @@
 // components/Collection/ProfileStats.tsx
 import React from "react";
-import { Star, X, Link } from "lucide-react";
+import { Star, Link } from "lucide-react";
+import Discord from "../../../assets/icons/DiscordLogo.svg";
 import Eth from "../../../assets/icons/Eth.svg";
 import { ProfileStatsData } from "../../../data/profileStatsData";
 
@@ -24,11 +25,11 @@ const ProfileStats: React.FC<ProfileStatsProps> = ({ data }) => {
         {/* NFT Name and Social Links */}
         <div className="flex flex-col">
           <div className="flex items-center space-x-1">
-            <span className="font-bold text-lg">{data.name}</span>
+            <span className="font-semibold text-lg">{data.name}</span>
             <Star className="h-4 w-4 text-white" />
           </div>
           <div className="flex space-x-2">
-            <X className="h-4 w-4 text-gray-400" />
+            <Discord className="h-4 w-4 text-gray-400" />
             <Link className="h-4 w-4 text-gray-400" />
           </div>
         </div>

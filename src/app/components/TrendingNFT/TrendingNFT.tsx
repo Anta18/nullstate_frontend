@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import TabMenu from "./TabMenu";
 import Eth from "../../../assets/icons/Eth.svg";
 import { useRouter } from "next/navigation";
@@ -8,14 +8,10 @@ import Link from "next/link";
 interface NftCollection {
   collectionName: string;
   floorPrice: string;
-  topBid: string;
-  dayFloorChange: string;
-  weekFloorChange: string;
-  dayVolume: string;
-  weekVolume: string;
-  owners: string;
-  supply: string;
+  volume: string;
+  sales: string;
   imageUrl?: string;
+  lastSoldImageUrls: string[]; // 3 image urls for "Last Sold"
 }
 
 interface TrendingNFTProps {
@@ -27,8 +23,20 @@ const TrendingNFT: React.FC<TrendingNFTProps> = ({ data, limit }) => {
   const router = useRouter();
   const displayedData = limit ? data.slice(0, limit) : data;
 
+  // Track favourite status for each row
+  const [favourites, setFavourites] = useState<boolean[]>([]);
+
   const handleRowClick = () => {
     router.push("/collection");
+  };
+
+  const toggleFavourite = (e: React.MouseEvent, index: number) => {
+    e.stopPropagation();
+    setFavourites((prevFavs) => {
+      const newFavs = [...prevFavs];
+      newFavs[index] = !newFavs[index];
+      return newFavs;
+    });
   };
 
   return (
@@ -39,86 +47,73 @@ const TrendingNFT: React.FC<TrendingNFTProps> = ({ data, limit }) => {
         <table className="w-full text-left">
           <thead className="border-b border-gray-700 bg-[#121111]">
             <tr className="uppercase text-xs text-gray-400">
-              <th className="py-3 font-medium pl-2">Collections</th>
-              <th className="py-3 font-medium pl-2">Floor Price</th>
-              <th className="py-3 font-medium pl-2">Top Bid</th>
-              <th className="py-3 font-medium pl-2">24h Floor</th>
-              <th className="py-3 font-medium pl-2">7D Floor</th>
-              <th className="py-3 font-medium pl-2">24h Volume</th>
-              <th className="py-3 font-medium pl-2">7D Volume</th>
-              <th className="py-3 font-medium pl-2">Owners</th>
-              <th className="py-3 font-medium pl-2">Supply</th>
+              <th className="py-3 font-medium pl-2">Collection</th>
+              <th className="py-3 font-medium pl-2">Volume(300)</th>
+              <th className="py-3 font-medium pl-2">Floor</th>
+              <th className="py-3 font-medium pl-2">Sales</th>
+              <th className="py-3 font-medium pl-2">Last Sold</th>
+              <th className="py-3 pl-4"></th>
             </tr>
           </thead>
           <tbody>
-            {displayedData.map((item, idx) => (
-              <tr
-                key={idx}
-                onClick={handleRowClick}
-                className="border-b border-gray-800 hover:bg-gray-900 transition-colors cursor-pointer"
-              >
-                <td className="py-4 pl-2 flex items-center space-x-3">
-                  {item.imageUrl ? (
-                    <img
-                      src={item.imageUrl}
-                      alt={item.collectionName}
-                      className="w-8 h-8 object-cover rounded"
-                    />
-                  ) : (
-                    <div className="w-8 h-8 bg-gray-700 rounded" />
-                  )}
-                  <span className="font-medium">{item.collectionName}</span>
-                </td>
-                <td className="py-4 pl-2">
-                  <span className="flex">
-                    <Eth className="h-3 mt-[6px] mr-1" />
-                    {item.floorPrice}
-                  </span>
-                </td>
-                <td className="py-4 pl-2">
-                  <span className="flex">
-                    <Eth className="h-3 mt-[6px] mr-1" />
-                    {item.topBid}
-                  </span>
-                </td>
-                <td className="py-4 pl-2">
-                  <span
-                    className={
-                      item.dayFloorChange.startsWith("+")
-                        ? "text-green-400"
-                        : "text-red-400"
-                    }
-                  >
-                    {item.dayFloorChange}
-                  </span>
-                </td>
-                <td className="py-4 pl-2">
-                  <span
-                    className={
-                      item.weekFloorChange.startsWith("+")
-                        ? "text-green-400"
-                        : "text-red-400"
-                    }
-                  >
-                    {item.weekFloorChange}
-                  </span>
-                </td>
-                <td className="py-4 pl-2">
-                  <span className="flex">
-                    <Eth className="h-3 mt-[6px] mr-1" />
-                    {item.dayVolume}
-                  </span>
-                </td>
-                <td className="py-4 pl-2">
-                  <span className="flex">
-                    <Eth className="h-3 mt-[6px] mr-1" />
-                    {item.weekVolume}
-                  </span>
-                </td>
-                <td className="py-4 pl-2">{item.owners}</td>
-                <td className="py-4 pl-2">{item.supply}</td>
-              </tr>
-            ))}
+            {displayedData.map((item, idx) => {
+              return (
+                <tr
+                  key={idx}
+                  onClick={handleRowClick}
+                  className="border-b border-gray-800 hover:bg-gray-900 transition-colors cursor-pointer"
+                >
+                  {/* Collection */}
+                  <td className="py-4 pl-2 flex items-center space-x-3">
+                    {item.imageUrl ? (
+                      <img
+                        src={item.imageUrl}
+                        alt={item.collectionName}
+                        className="w-8 h-8 object-cover rounded"
+                      />
+                    ) : (
+                      <div className="w-8 h-8 bg-gray-700 rounded" />
+                    )}
+                    <span className="font-medium">{item.collectionName}</span>
+                  </td>
+                  {/* Volume(300) */}
+                  <td className="py-4 pl-2">
+                    <span className="flex items-center">
+                      <Eth className="h-3 mr-1" />
+                      {item.volume}
+                    </span>
+                  </td>
+                  {/* Floor */}
+                  <td className="py-4 pl-2">
+                    <span className="flex items-center">
+                      <Eth className="h-3 mr-1" />
+                      {item.floorPrice}
+                    </span>
+                  </td>
+                  {/* Sales (computed as supply - owners) */}
+                  <td className="py-4 pl-2">{item.sales}</td>
+                  {/* Last Sold - render 3 image urls */}
+                  <td className="py-4 pl-2">
+                    <div className="flex space-x-2">
+                      {item.lastSoldImageUrls.map((url, idx) => (
+                        <img
+                          key={idx}
+                          src={url}
+                          alt={`Last sold ${idx + 1}`}
+                          className="w-6 h-6 object-cover rounded"
+                        />
+                      ))}
+                    </div>
+                  </td>
+                  {/* Favourite Star */}
+                  <td className="py-2 pl-2 text-2xl">
+                    <button onClick={(e) => toggleFavourite(e, idx)}>
+                      {favourites[idx] ? "★" : "☆"}
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

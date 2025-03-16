@@ -1,127 +1,90 @@
 "use client";
-import { getUserNFTs } from "@/Backend/GetUserNFT";
-import { useIsConnected, useWallet } from "@fuels/react";
+import React, { useState } from "react";
+import { nfts } from "../../data/userNFTData";
+import BuyTable from "../components/Buy/BuyTable";
+import NFTCollectionDisplay from "../components/Profile/CollectionDispay";
 
-import React, { useEffect, useState } from "react";
-import ProfileCard from "../components/Profile/ProfileCard";
-import WalletInfoCard from "../components/Profile/WalletInfoCard";
-import TransactionDistributionChart from "../components/Profile/TransactionDistributionChart";
-import TransactionList from "../components/Profile/TransactionList";
+const NFTMarketplacePage = () => {
+  const [activeTab, setActiveTab] = useState<"collection" | "activity">(
+    "collection"
+  );
+  const totalCollections = 79;
 
-import { walletData } from "../../data/walletData";
-import { profileData } from "../../data/profileData";
-import { transactions } from "../../data/transactionsData";
-
-const typeColors: Record<string, string> = {
-  set: "#1f77b4",
-  received: "#ff7f0e",
-  transferred: "#2ca02c",
-  bought: "#d62728",
-  registered: "#9467bd",
-};
-
-const filterOptions = ["All activity", "Transfers", "NFTs", "dApps"];
-
-interface NFT {
-  id: number;
-  nftId: string;
-  nftName: string;
-  nftDescription: string;
-  nftImage: string;
-  nftPrice: string;
-  nftOwnerAddress: string;
-  nftCreatorAddress: string;
-  nftStatus: string;
-}
-
-
-const CryptoWalletInterface: React.FC = () => {
-  const {wallet} = useWallet();
-  const { isConnected } = useIsConnected();
-  const [address, setAddress] = useState("");
-  const [userNFTs, setUserNFTs] = useState<NFT[]>([]);
-  const [selectedFilter, setSelectedFilter] = useState("All activity");
-  
-
-  useEffect(() => {
-    if(!isConnected || !wallet) return;
-    const userAddress = wallet.address.toString();
-    setAddress(userAddress);
-  }, [isConnected, wallet]);
-
-  useEffect(() => {
-    if(!address) return;
-
-    const fetchNFTs = async () =>{
-      try {
-        const res = await fetch(`/api/get-user-nfts?address=${address}`);
-        if(!res.ok) {
-          console.error("Failed to fetch user NFTs");
-          return;
-        }
-        const data:[] = await res.json();
-        console.log("NFT are",data);
-        setUserNFTs(data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchNFTs();
-    
-  }, [address]);
-
- 
   return (
-    <div className="bg-black text-white min-h-screen p-4 pt-16">
-      <div className="flex items-center gap-2 mb-4">
-        <span className="text-gray-400 text-sm">Wallet address</span>
-        <span className="text-gray-300 text-sm">{walletData.address}</span>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <ProfileCard profile={profileData} />
-        <div className="md:col-span-2 space-y-4">
-          <WalletInfoCard walletData={walletData} />
-          <div className="border-1 border-gray-700 rounded-xl p-4">
-            <TransactionDistributionChart
-              transactions={transactions}
-              typeColors={typeColors}
-            />
-          </div>
-        </div>
-      </div>
-
-      <div className="mt-8">
-        <div className="flex justify-between items-center mb-4">
-          <div className="flex items-center gap-2">
-            <h2 className="font-bold">Activity</h2>
-            <span className="text-gray-400">•</span>
-            <span className="text-gray-400">
-              {transactions.length} Transactions
-            </span>
-          </div>
-          <div className="flex gap-2">
-            {filterOptions.map((option, index) => (
-              <button
-                key={index}
-                onClick={() => setSelectedFilter(option)}
-                className={`${
-                  selectedFilter === option ? "bg-blue-600" : "bg-gray-800"
-                } rounded-full px-4 py-1 text-sm`}
-              >
-                {option}
-              </button>
-            ))}
-          </div>
-        </div>
-        <TransactionList
-          transactions={transactions}
-          filter={selectedFilter}
-          typeColors={typeColors}
+    <div className="min-h-screen bg-black text-white pt-20 font-afacad">
+      {/* Profile Section */}
+      <div className="flex flex-col py-10 ml-[60px]">
+        <img
+          className="w-40 h-40 rounded-full overflow-hidden"
+          src="/images/nft_cat.png"
+          alt="Profile"
         />
+
+        <h2 className="mt-6 ml-1 text-2xl font-semibold">nullstate.eth</h2>
+
+        <div className="flex items-center mt-2 ml-1 text-[16px] text-[#E0D9F5]">
+          <span>nullstate.eth</span>
+          <svg
+            className="w-4 h-4 mr-2"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M19 9l-7 7-7-7"
+            />
+          </svg>
+          <span>Joined November 2012</span>
+        </div>
       </div>
+
+      {/* Tabs */}
+      <div className="bg-[#131419] border-b border-gray-800 ">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex">
+            <button
+              onClick={() => setActiveTab("collection")}
+              className={`px-8 py-4 ${
+                activeTab === "collection"
+                  ? "text-white border-b-2 border-white"
+                  : "text-gray-400 hover:text-white"
+              }`}
+            >
+              COLLECTED {totalCollections}
+            </button>
+            <button
+              onClick={() => setActiveTab("activity")}
+              className={`px-8 py-4 ${
+                activeTab === "activity"
+                  ? "text-white border-b-2 border-white"
+                  : "text-gray-400 hover:text-white"
+              }`}
+            >
+              ACTIVITY
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Content Section */}
+      <div className="pb-16">
+        {activeTab === "activity" && (
+          <div className="mt-4 overflow-x-auto max-w-6xl mx-auto ">
+            <BuyTable />
+          </div>
+        )}
+        {activeTab === "collection" && <NFTCollectionDisplay nfts={nfts} />}
+      </div>
+
+      {/* Footer */}
+      <footer className="border-t border-gray-800 py-4 text-center text-xs text-gray-500">
+        All rights reserved. Nullstate © 2022
+      </footer>
     </div>
   );
 };
 
-export default CryptoWalletInterface;
+export default NFTMarketplacePage;
