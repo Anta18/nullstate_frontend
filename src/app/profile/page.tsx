@@ -149,7 +149,7 @@ const NFTMarketplacePage = () => {
             <BuyTable />
           </div>
         )}
-        {activeTab === "collection" && <NFTCollectionDisplay nfts={nfts} />}
+        {activeTab === "collection" && <NFTCollectionDisplay nfts={userNFTs} />}
       </div>
 
       {/* Footer */}
