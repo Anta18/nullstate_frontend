@@ -24,20 +24,20 @@ const NFTCollectionDisplay: React.FC<NFTCollectionDisplayProps> = ({
         }`}
       >
         <SearchHeader />
-        <div className="max-w-6xl mx-auto mt-4 px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="mx-auto mt-4 px-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
             {nfts.map((nft) => (
               <div
                 key={nft.id}
-                className="flex flex-col w-64"
+                className="flex flex-col w-75"
                 onMouseEnter={() => setHoveredId(nft.id)}
                 onMouseLeave={() => setHoveredId(null)}
               >
-                <div className="relative bg-[#131419] w-64 h-64">
+                <div className="relative bg-[#131419] w-75 h-75">
                   <img
                     src={nft.imageUrl}
                     alt={nft.title}
-                    className="w-64 h-64 aspect-square object-cover rounded"
+                    className="w-75 h-75 aspect-square object-cover rounded"
                   />
                 </div>
                 <div className="mt-4 flex flex-col h-28">

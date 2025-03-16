@@ -6,7 +6,6 @@ import NFTCollectionDisplay from "../components/Profile/CollectionDispay";
 import { getUserNFTs } from "@/Backend/GetUserNFT";
 import { useIsConnected, useWallet } from "@fuels/react";
 
-
 interface NFT {
   id: number;
   nftId: string;
@@ -19,73 +18,67 @@ interface NFT {
   nftStatus: string;
 }
 interface FetchedNFT {
-  id: number,
-  title: string,
-  collection: string,
-  price: number,
-  tokenId: string,
-  imageUrl: string,
+  id: number;
+  title: string;
+  collection: string;
+  price: number;
+  tokenId: string;
+  imageUrl: string;
 }
 
-
 const NFTMarketplacePage = () => {
-  const {wallet} = useWallet();
+  const { wallet } = useWallet();
   const { isConnected } = useIsConnected();
   const [address, setAddress] = useState("");
   const [userNFTs, setUserNFTs] = useState<FetchedNFT[]>([]);
 
   useEffect(() => {
-    if(!isConnected || !wallet) return;
+    if (!isConnected || !wallet) return;
     const userAddress = wallet.address.toString();
     setAddress(userAddress);
   }, [isConnected, wallet]);
 
   useEffect(() => {
-    if(!isConnected || !wallet) return;
+    if (!isConnected || !wallet) return;
     const userAddress = wallet.address.toString();
     setAddress(userAddress);
   }, [isConnected, wallet]);
 
   useEffect(() => {
-    if(!address) return;
+    if (!address) return;
 
-    const fetchNFTs = async () =>{
+    const fetchNFTs = async () => {
       try {
         const res = await fetch(`/api/get-user-nfts?address=${address}`);
-        if(!res.ok) {
+        if (!res.ok) {
           console.error("Failed to fetch user NFTs");
           return;
         }
-        const data:NFT[] = await res.json();
-        const fetchedNFT:FetchedNFT[] = data.map((nft) => {
+        const data: NFT[] = await res.json();
+        const fetchedNFT: FetchedNFT[] = data.map((nft) => {
           return {
             id: nft.id,
             title: nft.nftName,
-            collection: nft.id.toString(),// Have to change it when collection will be added
+            collection: nft.id.toString(), // Have to change it when collection will be added
             price: parseFloat(nft.nftPrice),
             tokenId: nft.id.toString(),
-            imageUrl: nft.nftImage
-
-          }
+            imageUrl: nft.nftImage,
+          };
         });
-        console.log("NFT are",fetchedNFT);
+        console.log("NFT are", fetchedNFT);
         setUserNFTs(fetchedNFT);
-        console.log("USer NFT is ",userNFTs)
+        console.log("USer NFT is ", userNFTs);
       } catch (error) {
         console.error(error);
       }
     };
     fetchNFTs();
-    
   }, [address]);
-
-
 
   const [activeTab, setActiveTab] = useState<"collection" | "activity">(
     "collection"
   );
   const totalCollections = 79;
-  
 
   return (
     <div className="min-h-screen bg-black text-white pt-20 font-afacad">
@@ -120,7 +113,7 @@ const NFTMarketplacePage = () => {
 
       {/* Tabs */}
       <div className="bg-[#131419] border-b border-gray-800 ">
-        <div className="max-w-6xl mx-auto">
+        <div className="mx-auto">
           <div className="flex">
             <button
               onClick={() => setActiveTab("collection")}
@@ -149,7 +142,7 @@ const NFTMarketplacePage = () => {
       {/* Content Section */}
       <div className="pb-16">
         {activeTab === "activity" && (
-          <div className="mt-4 overflow-x-auto max-w-6xl mx-auto ">
+          <div className="mt-4 overflow-x-auto ">
             <BuyTable />
           </div>
         )}
