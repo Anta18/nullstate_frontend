@@ -10,6 +10,7 @@ interface NFT {
   id: number;
   nftId: string;
   nftName: string;
+  nftAssetId: string;
   nftDescription: string;
   nftImage: string;
   nftPrice: string;
@@ -17,8 +18,9 @@ interface NFT {
   nftCreatorAddress: string;
   nftStatus: string;
 }
-interface FetchedNFT {
+export interface FetchedNFT {
   id: number;
+  nftAssetId: string;
   title: string;
   collection: string;
   price: number;
@@ -63,6 +65,7 @@ const NFTMarketplacePage = () => {
             price: parseFloat(nft.nftPrice),
             tokenId: nft.id.toString(),
             imageUrl: nft.nftImage,
+            nftAssetId: nft.nftAssetId,
           };
         });
         console.log("NFT are", fetchedNFT);
@@ -146,7 +149,7 @@ const NFTMarketplacePage = () => {
             <BuyTable />
           </div>
         )}
-        {activeTab === "collection" && <NFTCollectionDisplay nfts={userNFTs} />}
+        {activeTab === "collection" && <NFTCollectionDisplay nfts={nfts} />}
       </div>
 
       {/* Footer */}

@@ -3,10 +3,10 @@ import React, { useState } from "react";
 import SellModal from "./SellModal"; // adjust the import path as needed
 import SearchHeader from "./SearchHeader";
 import Eth from "../../../assets/icons/Eth.svg";
-import { NFT } from "../../../data/userNFTData";
+import { FetchedNFT } from "@/app/profile/page";
 
 interface NFTCollectionDisplayProps {
-  nfts: NFT[];
+  nfts: FetchedNFT[];
 }
 
 const NFTCollectionDisplay: React.FC<NFTCollectionDisplayProps> = ({
@@ -14,7 +14,7 @@ const NFTCollectionDisplay: React.FC<NFTCollectionDisplayProps> = ({
 }) => {
   const [hoveredId, setHoveredId] = useState<number | null>(null);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
-  const [selectedNFT, setSelectedNFT] = useState<NFT | null>(null);
+  const [selectedNFT, setSelectedNFT] = useState<FetchedNFT | null>(null);
 
   return (
     <div className="relative">
