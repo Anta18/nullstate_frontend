@@ -1,9 +1,37 @@
 // components/SellModal.tsx
 import React, { useState } from "react";
+import {
+  WalletUnlocked,
+  Provider,
+  Contract,
+  ContractFactory,
+  Address,
+  bn
+} from 'fuels';
+import { useWallet } from '@fuels/react';
+import { NftFixedPriceSwapPredicate } from "../../../ABI's/PREDICATE/NftFixedPriceSwapPredicate";
+
+interface ConfigType {
+  FEE_AMOUNT: string;
+  FEE_ASSET: string;
+  TREASURY_ADDRESS: string;
+  ASK_AMOUNT: string;
+  ASK_ASSET: string;
+  NFT_ASSET_ID: string;
+}
+
+interface Entry {
+  sellerAddress: string;
+  predicateAddress: string;
+  nftAssetId: string;
+  config: ConfigType;
+}
+
 
 interface SellModalProps {
   onClose: () => void;
   nftTitle: string;
+  nftAssetId: string;
   collectionName: string;
   rarity: string;
   nftImage: string;
@@ -12,11 +40,22 @@ interface SellModalProps {
 const SellModal: React.FC<SellModalProps> = ({
   onClose,
   nftTitle,
+  nftAssetId,
   collectionName,
   rarity,
   nftImage,
 }) => {
+  const { wallet } = useWallet();
+  const [config, setConfig] = useState<{ [key: string]: string }>({
+    ASK_AMOUNT: '',
+    ASK_ASSET: '',
+});
+
   // Pricing states
+  console.log(nftTitle);
+  console.log(collectionName);
+  console.log(rarity);
+  console.log(nftImage);
   const [floorPrice, setFloorPrice] = useState("");
   const [topTraitPrice, setTopTraitPrice] = useState("");
   const [startingPrice, setStartingPrice] = useState("");
@@ -33,7 +72,96 @@ const SellModal: React.FC<SellModalProps> = ({
   // Total potential earnings
   const [totalEarnings, setTotalEarnings] = useState("");
 
+  async function createPredicateEntry(entry: Entry) {
+    try {
+        const res = await fetch("/api/create-predicate-entry", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(entry),
+        });
+
+        if (!res.ok) {
+            console.error("Failed to create predicate entry");
+            return;
+        }
+
+        const data = await res.json();
+        console.log("Predicate entry created:", data);
+    } catch (error) {
+        console.error("Error creating predicate entry:", error);
+    }
+    };
+
+  const initializeSellerPredicate = async () => {
+    if (!wallet) return;
+
+    const missingFields = Object.entries(config)
+        .filter(([key, value]) => !value.trim())
+        .map(([key, value]) => key);
+
+    if (missingFields.length > 0) {
+        console.log("Missing Fields", missingFields);
+        alert(`Please fill in all required fields: ${missingFields.join(", ")}`);
+        return;
+    }
+    ///////These need to be asked and put//////
+
+    const FEE_AMOUNT = "1";
+    const FEE_ASSET = "0xf8f8b6283d7fa5b672b530cbb84fcccb4ff8dc40f8176ef4544ddb1f1952ad07"
+    const TREASURY_ADDRESS = "0x3867E485f463f22fb49758E18e72ed3844701d8AFaCaA434FB7e971bD22116b0";
+
+    ///////////////////////////////////////////
+
+    const configurableConstants = {
+        FEE_AMOUNT: bn(FEE_AMOUNT),
+        FEE_ASSET: { bits: FEE_ASSET},
+        TREASURY_ADDRESS: { bits: TREASURY_ADDRESS },
+        ASK_AMOUNT: bn(config.ASK_AMOUNT),
+        ASK_ASSET: { bits: config.ASK_ASSET },
+        RECEIVER: { bits: wallet.address.toString() }, // 64 chars
+        NFT_ASSET_ID: { bits: nftAssetId },
+    };
+
+    const newPredicate = new NftFixedPriceSwapPredicate({
+        provider: wallet.provider,
+        data: [],
+        configurableConstants,
+    });
+
+    try {
+        console.log("Transferring NFT to Predicate Address...");
+
+        const transferTx = await wallet.transfer(
+            newPredicate.address,
+            bn(1),
+            config.NFT_ASSET_ID,
+            { gasLimit: 100_000 }
+        );
+
+        await transferTx.waitForResult();
+        console.log("NFT successfully transferred to Predicate.");
+
+        const entry = {
+            sellerAddress: wallet.address.toString(),
+            predicateAddress: newPredicate.address.toString(),
+            nftAssetId: (config.NFT_ASSET_ID).toString(),
+            config: config as unknown as ConfigType
+        }
+
+        await createPredicateEntry(entry);
+        console.log("Predicate Initialized:", newPredicate);
+        console.log("Predicate Address:", newPredicate.address.toString());
+        const predicateBalance = await wallet.provider.getBalance(newPredicate.address, config.NFT_ASSET_ID);
+        console.log("Predicate NFT Balance:", predicateBalance.toString());
+    } catch (error) {
+        console.error("Error initializing predicate:", error);
+    }
+};
+
   const handleSubmit = () => {
+    
     console.log({
       nftTitle,
       collectionName,

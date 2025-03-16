@@ -89,7 +89,8 @@ const NFTCollectionDisplay: React.FC<NFTCollectionDisplayProps> = ({
             setSelectedNFT(null);
           }}
           nftTitle={selectedNFT.title}
-          collectionName={selectedNFT.collection}
+          nftAssetId={selectedNFT.nftAssetId}
+          collectionName="My Collection"
           rarity={selectedNFT.tokenId}
           nftImage={selectedNFT.imageUrl}
         />
