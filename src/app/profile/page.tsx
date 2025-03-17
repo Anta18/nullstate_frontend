@@ -82,7 +82,6 @@ const NFTMarketplacePage = () => {
       console.error(error);
     }
   };
-  
 
   const [activeTab, setActiveTab] = useState<"collection" | "activity">(
     "collection"
@@ -155,11 +154,18 @@ const NFTMarketplacePage = () => {
             <BuyTable />
           </div>
         )}
-        {activeTab === "collection" && <NFTCollectionDisplay nfts={userNFTs} onRefetch={refetchNFTs}/>}
+        {activeTab === "collection" &&
+          (userNFTs.length > 0 ? (
+            <NFTCollectionDisplay nfts={userNFTs} onRefetch={refetchNFTs} />
+          ) : (
+            <div className="text-center mt-4 text-gray-400">
+              No collections available.
+            </div>
+          ))}
       </div>
 
       {/* Footer */}
-      <footer className="border-t border-gray-800 py-4 text-center text-xs text-gray-500">
+      <footer className="border-t border-gray-800 w-full py-4 text-center text-xs text-gray-500 absolute bottom-0">
         All rights reserved. Nullstate © 2022
       </footer>
     </div>

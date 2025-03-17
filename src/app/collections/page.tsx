@@ -24,7 +24,6 @@ interface NFTCollection {
 }
 
 const Collection = () => {
-
   const [nftCollection, setNftCollection] = useState<NFTCollection[]>([]);
 
   useEffect(() => {
@@ -46,11 +45,6 @@ const Collection = () => {
     fetchNFTCollections();
   }, []);
 
-
-
-
-
-
   const dashboardData = {
     currentValue: 32.0,
     invested: 32.98,
@@ -64,7 +58,7 @@ const Collection = () => {
     },
   };
   return (
-    <div className="w-full bg-black pt-20">
+    <div className="w-full min-h-screen bg-black pt-20">
       {/* <PerformanceCard
         currentValue={dashboardData.currentValue}
         invested={dashboardData.invested}
