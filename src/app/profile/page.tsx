@@ -47,40 +47,42 @@ const NFTMarketplacePage = () => {
   }, [isConnected, wallet]);
 
   useEffect(() => {
-    if (!address) return;
-
-    const fetchNFTs = async () => {
-      try {
-        const res = await fetch(`/api/get-user-nfts?address=${address}`);
-        if (!res.ok) {
-          console.error("Failed to fetch user NFTs");
-          return;
-        }
-        const data: NFT[] = await res.json();
-        console.log("Data is ", data);
-        const onlyMinted = data.filter((nft) => nft.nftStatus === "Minted");
-        console.log("Only minted is ", onlyMinted);
-
-        const fetchedNFT: FetchedNFT[] = onlyMinted.map((nft) => {
-          return {
-            id: nft.id,
-            title: nft.nftName,
-            collection: nft.id.toString(), // Have to change it when collection will be added
-            price: parseFloat(nft.nftPrice),
-            tokenId: nft.id.toString(),
-            imageUrl: nft.nftImage,
-            nftAssetId: nft.nftId,
-          };
-        });
-        console.log("NFT are", fetchedNFT);
-        setUserNFTs(fetchedNFT);
-        console.log("USer NFT is ", userNFTs);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchNFTs();
+    if (address) {
+      refetchNFTs();
+    }
   }, [address]);
+
+  const refetchNFTs = async () => {
+    try {
+      if (!address) return;
+      const res = await fetch(`/api/get-user-nfts?address=${address}`);
+      if (!res.ok) {
+        console.error("Failed to fetch user NFTs");
+        return;
+      }
+      const data: NFT[] = await res.json();
+      console.log("Data is ", data);
+
+      const onlyMinted = data.filter((nft) => nft.nftStatus === "Minted");
+      console.log("Only minted is ", onlyMinted);
+
+      const fetchedNFT: FetchedNFT[] = onlyMinted.map((nft) => {
+        return {
+          id: nft.id,
+          title: nft.nftName,
+          collection: nft.id.toString(),
+          price: parseFloat(nft.nftPrice),
+          tokenId: nft.id.toString(),
+          imageUrl: nft.nftImage,
+          nftAssetId: nft.nftId,
+        };
+      });
+      setUserNFTs(fetchedNFT);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
 
   const [activeTab, setActiveTab] = useState<"collection" | "activity">(
     "collection"
@@ -153,7 +155,7 @@ const NFTMarketplacePage = () => {
             <BuyTable />
           </div>
         )}
-        {activeTab === "collection" && <NFTCollectionDisplay nfts={userNFTs} />}
+        {activeTab === "collection" && <NFTCollectionDisplay nfts={userNFTs} onRefetch={refetchNFTs}/>}
       </div>
 
       {/* Footer */}

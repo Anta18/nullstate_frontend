@@ -1,19 +1,19 @@
 "use client";
 import React ,{useEffect, useState} from "react";
-import ProfileStats from "../components/Collection/ProfileStats";
-import SidebarFilters from "../components/Collection/SidebarFilters";
-import NFTCollectionDisplay from "../components/Collection/NFTCollectionDisplay";
-import SearchHeader from "../components/Collection/SearchHeader";
+import ProfileStats from "../../components/Collection/ProfileStats";
+import SidebarFilters from "../../components/Collection/SidebarFilters";
+import NFTCollectionDisplay from "../../components/Collection/NFTCollectionDisplay";
+import SearchHeader from "../../components/Collection/SearchHeader";
 import { Afacad } from "next/font/google";
 
-import { nfts } from "../../data/nftData";
-import { profileStatsData } from "../../data/profileStatsData";
+import { nfts } from "../../../data/nftData";
+import { profileStatsData } from "../../../data/profileStatsData";
 import {
   traits,
   traitOptions,
   rarityData,
   priceData,
-} from "../../data/sidebarFiltersData";
+} from "../../../data/sidebarFiltersData";
 import { useParams } from "next/navigation";
 
 const afacad = Afacad({ subsets: ["latin"], weight: ["400", "600", "700"] });
@@ -49,6 +49,7 @@ const NFTCollectionPage: React.FC = () => {
           throw new Error(`Failed to fetch: ${res.status}`);
         }
         const data = await res.json();
+        console.log(data);
         setPredicateEntries(data);
       } catch (error) {
         console.error(error);

@@ -27,6 +27,7 @@ model NFTMinting{
   nftStatus String
   nftCreatedAt DateTime @default(now())
   nftUpdatedAt DateTime @default(now())
+  collectionName String?
   predicateEntries  predicateEntry[]
 }
 
@@ -37,6 +38,8 @@ model predicateEntry {
   predicateId String @unique
   nftId String 
   config Json
-  
+  status String @default("active")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
   NFTMinting NFTMinting @relation(fields: [nftId], references: [nftId])
 }

@@ -26,8 +26,8 @@ const TrendingNFT: React.FC<TrendingNFTProps> = ({ data, limit }) => {
   // Track favourite status for each row
   const [favourites, setFavourites] = useState<boolean[]>([]);
 
-  const handleRowClick = () => {
-    router.push("/collection");
+  const handleRowClick = (collectionName: string) => {
+    router.push(`/collections/${collectionName}`);
   };
 
   const toggleFavourite = (e: React.MouseEvent, index: number) => {
@@ -60,7 +60,7 @@ const TrendingNFT: React.FC<TrendingNFTProps> = ({ data, limit }) => {
               return (
                 <tr
                   key={idx}
-                  onClick={handleRowClick}
+                  onClick={()=>handleRowClick(item.collectionName)}
                   className="border-b border-gray-800 hover:bg-gray-900 transition-colors cursor-pointer"
                 >
                   {/* Collection */}

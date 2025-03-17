@@ -10,7 +10,7 @@ import {
 } from "fuels";
 import { useWallet } from "@fuels/react";
 import { NftFixedPriceSwapPredicate } from "../../../ABI's/PREDICATE/NftFixedPriceSwapPredicate";
-
+import {toast} from "react-toastify";
 interface ConfigType {
   FEE_AMOUNT: string;
   FEE_ASSET: string;
@@ -44,10 +44,11 @@ const SellModal: React.FC<SellModalProps> = ({
   rarity,
   nftImage,
 }) => {
+
   const { wallet } = useWallet();
   const [askAmount, setAskAmount] = useState("");
   const [askAsset, setAskAsset] = useState("");
-
+ const [isSelling, setIsSelling] = useState(false);
   const [config, setConfig] = useState<ConfigType | null>(null);
 
 
@@ -167,6 +168,7 @@ const SellModal: React.FC<SellModalProps> = ({
 
 
   const handleSubmit = async () => {
+    
     const finalConfig: ConfigType = {
       FEE_AMOUNT: "", 
       FEE_ASSET: "",
@@ -175,10 +177,24 @@ const SellModal: React.FC<SellModalProps> = ({
       ASK_ASSET: askAsset,
       NFT_ASSET_ID: nftAssetId,
     };
-    setConfig(finalConfig);
-    await initializeSellerPredicate(finalConfig);
-    onClose();
-    console.log("END");
+    setIsSelling(true);
+    try {
+      const success = await initializeSellerPredicate(finalConfig);
+      if (success) {
+        toast.success("NFT listed successfully");
+        onClose();
+      } else {
+        toast.error("Failed to list NFT");
+      }
+      
+    } catch (error) {
+      console.error("Error initializing predicate:", error);
+      toast.error("Failed to list NFT");
+      
+    }finally{
+      setIsSelling(false);
+    }
+   
   };
 
   return (
@@ -270,8 +286,9 @@ const SellModal: React.FC<SellModalProps> = ({
         <button
           onClick={handleSubmit}
           className="w-full bg-gradient-to-r from-[#4023B5] to-[#5834D9] hover:from-[#4628C8] hover:to-[#613BE2] transition-colors duration-300 py-3 text-xl font-semibold rounded-lg shadow-lg"
+          disabled={isSelling}
         >
-          Complete Listing
+           {isSelling ? "Listing..." : "Complete Listing"}
         </button>
       </div>
     </div>

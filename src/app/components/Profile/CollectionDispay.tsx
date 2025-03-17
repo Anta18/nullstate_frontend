@@ -7,14 +7,24 @@ import { FetchedNFT } from "@/app/profile/page";
 
 interface NFTCollectionDisplayProps {
   nfts: FetchedNFT[];
+  onRefetch: () => void;
 }
 
 const NFTCollectionDisplay: React.FC<NFTCollectionDisplayProps> = ({
   nfts,
+  onRefetch,
 }) => {
   const [hoveredId, setHoveredId] = useState<number | null>(null);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [selectedNFT, setSelectedNFT] = useState<FetchedNFT | null>(null);
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+    setSelectedNFT(null);
+    if (onRefetch) {
+      onRefetch();
+    }
+  };
 
   return (
     <div className="relative">
@@ -85,8 +95,7 @@ const NFTCollectionDisplay: React.FC<NFTCollectionDisplayProps> = ({
       {modalOpen && selectedNFT && (
         <SellModal
           onClose={() => {
-            setModalOpen(false);
-            setSelectedNFT(null);
+            handleCloseModal();
           }}
           nftTitle={selectedNFT.title}
           nftAssetId={selectedNFT.nftAssetId}
