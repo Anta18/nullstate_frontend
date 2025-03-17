@@ -31,3 +31,18 @@ export async function getListedNFTs(){
         console.error(error);
     }
 }
+export async function changePredicateStatus(id:string){
+    try {
+        const nfts = await prisma.predicateEntry.update({
+            where:{
+                predicateId:id
+            },
+            data:{
+                status:"Closed"
+            }
+        })
+        
+    } catch (error) {
+        console.error(error);
+    }
+}

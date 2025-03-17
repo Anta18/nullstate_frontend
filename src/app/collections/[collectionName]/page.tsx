@@ -50,7 +50,16 @@ const NFTCollectionPage: React.FC = () => {
         }
         const data = await res.json();
         console.log(data);
-        setPredicateEntries(data);
+        const mappedData = data.map((entry:any) => {
+            return {
+                id: entry.id,
+                title: entry.NFTMinting.nftName,
+                price: entry.NFTMinting.nftPrice,
+                tokenId: entry.nftId,
+                imageUrl: entry.NFTMinting.nftImage
+            }
+        })
+        setPredicateEntries(mappedData);
       } catch (error) {
         console.error(error);
       }
@@ -84,7 +93,7 @@ const NFTCollectionPage: React.FC = () => {
 
         <main className="flex-1 flex flex-col overflow-hidden">
           <div className="flex-1 overflow-y-auto custom-scrollbar ml-20">
-            <NFTCollectionDisplay nfts={nfts} />
+            <NFTCollectionDisplay nfts={predicateEntries} />
           </div>
         </main>
       </div>

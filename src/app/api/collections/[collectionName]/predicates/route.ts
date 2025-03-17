@@ -13,6 +13,7 @@ export async function GET(
                 NFTMinting:{
                     collectionName
                 },
+                status:"active"
             },
             include:{
                 NFTMinting:true

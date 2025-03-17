@@ -18,7 +18,8 @@ const LastActivity: React.FC<LastActivityProps> = ({ activity }) => {
         <span className="mr-[2px]">{activity.price}</span>
         <Eth className="h-3" />
         <span className="text-gray-400 text-sm ml-2">
-          list by {activity.actionBy}
+          list by {activity.actionBy.slice(0, 8)}...
+          {activity.actionBy.slice(-10)}
         </span>
       </div>
     </div>
