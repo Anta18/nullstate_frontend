@@ -1,0 +1,13 @@
+myNextApp:
+  component: "@sls-next/serverless-component@latest"
+  inputs:
+    # (Optional) Provide an S3 bucket name or let it be auto-generated
+    bucketName: "my-nextjs-lambda-bucket"
+
+    # (Optional) If you own a domain in Route 53, you can specify it:
+    # domain: ["example.com"]  # or ['subdomain', 'example.com']
+
+    # (Optional) Include environment variables:
+    env:
+       DATABASE_URL: ${env.DATABASE_URL}
+       DIRECT_URL: ${env.DIRECT_URL}

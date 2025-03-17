@@ -69,7 +69,7 @@ const NFTMarketplacePage = () => {
           title: nft.nftName,
           collection: nft.id.toString(),
           price: parseFloat(nft.nftPrice),
-          tokenId: nft.id.toString(),
+          tokenId: nft.toString(),
           imageUrl: nft.nftImage,
           nftAssetId: nft.nftId,
         };
