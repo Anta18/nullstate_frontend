@@ -14,7 +14,6 @@ import { generateRandomSubId } from "@/utils/randomSubId";
 import { useWallet } from "@fuels/react";
 import { Contract, getMintedAssetId } from "fuels";
 
-
 const NFT_CONTRACT_ID =
   "0xbcd6b6790d35474a72091db0f0efb570bbf51228d680f5322011dc566c5ca16e";
 
@@ -32,6 +31,7 @@ interface NFT {
   nftCreatorAddress: string;
   nftStatus: string;
 }
+
 const NFTMintPage: React.FC = () => {
   const { wallet } = useWallet();
   const { fuel } = useFuel();
@@ -41,6 +41,8 @@ const NFTMintPage: React.FC = () => {
     description: "",
     category: "",
     price: "",
+    collection: "", // "existing" or "new"
+    collectionDetail: "", // Either selecting an existing collection or entering a new one
   });
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -50,21 +52,31 @@ const NFTMintPage: React.FC = () => {
   const [minting, setMinting] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
+  // Dummy existing collections. Replace with dynamic data if needed.
+  const existingCollections = [
+    "Collection One",
+    "Collection Two",
+    "Collection Three",
+  ];
+
   const isFormValid = useMemo(() => {
-    return (
+    // Check basic fields and also that if a collection option is selected, then collectionDetail must be filled
+    const basicValid =
       formData.name.trim() !== "" &&
       formData.description.trim() !== "" &&
       formData.category.trim() !== "" &&
       formData.price.trim() !== "" &&
-      selectedFile !== null
-    );
+      formData.collection.trim() !== "" &&
+      selectedFile !== null;
+    const collectionValid = formData.collectionDetail.trim() !== "";
+    return basicValid && collectionValid;
   }, [formData, selectedFile]);
 
   const buttonText = uploading
     ? "Uploading..."
     : minting
-      ? "Minting..."
-      : "Mint NFT";
+    ? "Minting..."
+    : "Mint NFT";
   const isButtonDisabled = !isFormValid || uploading || minting;
 
   const handleInputChange = (
@@ -76,6 +88,8 @@ const NFTMintPage: React.FC = () => {
     setFormData((prevState) => ({
       ...prevState,
       [name]: value,
+      // Clear the collection detail if the collection type changes.
+      ...(name === "collection" ? { collectionDetail: "" } : {}),
     }));
   };
 
@@ -108,7 +122,8 @@ const NFTMintPage: React.FC = () => {
     }
     setShowModal(true);
   };
-  async function CreateNftOnServer(nftData:NFT) {
+
+  async function CreateNftOnServer(nftData: NFT) {
     try {
       const response = await fetch("/api/create-user-nft", {
         method: "POST",
@@ -123,12 +138,10 @@ const NFTMintPage: React.FC = () => {
       const data = await response.json();
       console.log("NFT created on server:", data);
       return data;
-      
     } catch (error) {
       console.error(error);
       throw error;
     }
-
   }
 
   const handleConfirmMint = async () => {
@@ -190,7 +203,7 @@ const NFTMintPage: React.FC = () => {
         nftCreatorAddress: wallet.address.toString(),
         nftStatus: "Minted",
       };
-      
+
       await CreateNftOnServer(entry);
       setMinting(false);
 
@@ -202,6 +215,8 @@ const NFTMintPage: React.FC = () => {
         description: "",
         category: "",
         price: "",
+        collection: "",
+        collectionDetail: "",
       });
       setSelectedFile(null);
       setPreviewUrl(null);
@@ -307,6 +322,66 @@ const NFTMintPage: React.FC = () => {
                   value={formData.category}
                 />
               </div>
+              {/* Collection Section */}
+              <div className="border border-gray-900 p-4 rounded-lg">
+                <h3 className="mb-2 font-semibold">Collection</h3>
+                <div className="flex flex-col md:flex-row md:items-center gap-4">
+                  <div className="flex-1">
+                    <label className="block mb-1 text-sm">
+                      Collection Exists?
+                    </label>
+                    <select
+                      name="collection"
+                      value={formData.collection}
+                      onChange={handleInputChange}
+                      className="w-full bg-[#131419] border border-[#272934] text-white py-2 px-3 rounded focus:outline-none focus:ring-2 focus:ring-purple-600"
+                    >
+                      <option value="">Select Option</option>
+                      <option value="existing">
+                        Add to Existing Collection
+                      </option>
+                      <option value="new">Create New Collection</option>
+                    </select>
+                  </div>
+                  <div className="flex-1">
+                    {formData.collection === "existing" && (
+                      <>
+                        <label className="block mb-1 text-sm">
+                          Select Collection
+                        </label>
+                        <select
+                          name="collectionDetail"
+                          value={formData.collectionDetail}
+                          onChange={handleInputChange}
+                          className="w-full bg-[#131419] border border-[#272934] text-white py-2 px-3 rounded focus:outline-none focus:ring-2 focus:ring-purple-600"
+                        >
+                          <option value="">Select a Collection</option>
+                          {existingCollections.map((col) => (
+                            <option key={col} value={col}>
+                              {col}
+                            </option>
+                          ))}
+                        </select>
+                      </>
+                    )}
+                    {formData.collection === "new" && (
+                      <>
+                        <label className="block mb-1 text-sm">
+                          Collection Name
+                        </label>
+                        <input
+                          type="text"
+                          name="collectionDetail"
+                          placeholder="Enter Collection Name"
+                          className="w-full bg-[#131419] border border-[#272934] text-white py-2 px-3 rounded focus:outline-none focus:ring-2 focus:ring-purple-600"
+                          onChange={handleInputChange}
+                          value={formData.collectionDetail}
+                        />
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
               <div>
                 <label className="block mb-2 pl-1">Price</label>
                 <input
@@ -323,11 +398,11 @@ const NFTMintPage: React.FC = () => {
                 onClick={handleOpenModal}
                 disabled={isButtonDisabled}
                 className={`w-full font-bold py-3 px-4 rounded-[4px] transition duration-300 
-                ${
-                  isButtonDisabled
-                    ? "bg-gray-500 cursor-not-allowed"
-                    : "bg-[#4023B5] hover:bg-purple-700"
-                } flex justify-center items-center`}
+                  ${
+                    isButtonDisabled
+                      ? "bg-gray-500 cursor-not-allowed"
+                      : "bg-[#4023B5] hover:bg-purple-700"
+                  } flex justify-center items-center`}
               >
                 {(uploading || minting) && (
                   <svg
@@ -368,7 +443,7 @@ const NFTMintPage: React.FC = () => {
           ></div>
           <div className="relative bg-[#14151B] p-8 rounded-xl shadow-2xl w-11/12 max-w-4xl border border-gray-800 animate-fadeIn">
             <h2 className="text-2xl font-bold mb-6 text-white flex items-center">
-              <span className="mr-2"></span> Confirm NFT Mint
+              Confirm NFT Mint
             </h2>
             <div className="flex flex-col md:flex-row gap-8">
               {previewUrl && (
@@ -388,26 +463,33 @@ const NFTMintPage: React.FC = () => {
                     {formData.name}
                   </h3>
                   <div className="h-px bg-gradient-to-r from-transparent via-gray-600 to-transparent mb-4"></div>
-
                   <div className="space-y-4">
                     <div className="flex flex-col">
                       <span className="text-gray-400 text-sm">Description</span>
                       <span className="text-white">{formData.description}</span>
                     </div>
-
                     <div className="flex flex-col">
                       <span className="text-gray-400 text-sm">Category</span>
                       <span className="text-white flex items-center">
                         <span className="mr-2">🏷️</span> {formData.category}
                       </span>
                     </div>
-
+                    <div className="flex flex-col">
+                      <span className="text-gray-400 text-sm">Collection</span>
+                      <span className="text-white">
+                        {formData.collection === "existing"
+                          ? `Existing: ${formData.collectionDetail}`
+                          : formData.collection === "new"
+                          ? `New: ${formData.collectionDetail}`
+                          : ""}
+                      </span>
+                    </div>
                     <div className="flex flex-col">
                       <span className="text-gray-400 text-sm">Price</span>
                       <span className="text-white font-bold flex items-center">
                         <span className="mr-2">
                           <Eth className="h-4 mr-2" />
-                        </span>{" "}
+                        </span>
                         {formData.price}
                       </span>
                     </div>

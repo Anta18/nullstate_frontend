@@ -10,7 +10,7 @@ import {
 } from "fuels";
 import { useWallet } from "@fuels/react";
 import { NftFixedPriceSwapPredicate } from "../../../ABI's/PREDICATE/NftFixedPriceSwapPredicate";
-import {toast} from "react-toastify";
+import { toast } from "react-toastify";
 interface ConfigType {
   FEE_AMOUNT: string;
   FEE_ASSET: string;
@@ -44,20 +44,18 @@ const SellModal: React.FC<SellModalProps> = ({
   rarity,
   nftImage,
 }) => {
-
   const { wallet } = useWallet();
   const [askAmount, setAskAmount] = useState("");
   const [askAsset, setAskAsset] = useState("");
- const [isSelling, setIsSelling] = useState(false);
+  const [isSelling, setIsSelling] = useState(false);
   const [config, setConfig] = useState<ConfigType | null>(null);
-
 
   // Pricing states
   console.log(nftTitle);
   console.log(collectionName);
   console.log(rarity);
   console.log(nftImage);
-  console.log(nftAssetId)
+  console.log(nftAssetId);
   const [floorPrice, setFloorPrice] = useState("");
   const [topTraitPrice, setTopTraitPrice] = useState("");
   const [startingPrice, setStartingPrice] = useState("");
@@ -103,7 +101,6 @@ const SellModal: React.FC<SellModalProps> = ({
       return;
     }
 
- 
     ///////These need to be asked and put//////
 
     const FEE_AMOUNT = "1";
@@ -140,21 +137,21 @@ const SellModal: React.FC<SellModalProps> = ({
         { gasLimit: 100_000 }
       );
 
-      const transactionResponse  = await transferTx.waitForResult();
-      console.log("Transaction Response is ",transactionResponse);
-      
+      const transactionResponse = await transferTx.waitForResult();
+      console.log("Transaction Response is ", transactionResponse);
+
       console.log("NFT successfully transferred to Predicate.");
-       if (transactionResponse.status !== "success") {
-              // setMinting(false);
-              // toast.error("Failed to mint NFT");
-              return;
-            }
+      if (transactionResponse.status !== "success") {
+        // setMinting(false);
+        // toast.error("Failed to mint NFT");
+        return;
+      }
 
       const entry = {
         sellerAddress: wallet.address.toString(),
         predicateAddress: newPredicate.address.toString(),
         nftAssetId: finalConfig.NFT_ASSET_ID.toString(),
-        config: finalConfig
+        config: finalConfig,
       };
       console.log("Creating Predicate Entry...");
 
@@ -166,11 +163,9 @@ const SellModal: React.FC<SellModalProps> = ({
     }
   };
 
-
   const handleSubmit = async () => {
-    
     const finalConfig: ConfigType = {
-      FEE_AMOUNT: "", 
+      FEE_AMOUNT: "",
       FEE_ASSET: "",
       TREASURY_ADDRESS: "",
       ASK_AMOUNT: askAmount,
@@ -186,15 +181,12 @@ const SellModal: React.FC<SellModalProps> = ({
       } else {
         toast.error("Failed to list NFT");
       }
-      
     } catch (error) {
       console.error("Error initializing predicate:", error);
       toast.error("Failed to list NFT");
-      
-    }finally{
+    } finally {
       setIsSelling(false);
     }
-   
   };
 
   return (
@@ -223,7 +215,7 @@ const SellModal: React.FC<SellModalProps> = ({
         <div className="flex items-center mb-6 border-b border-gray-700 pb-4">
           <div className="relative">
             <img
-              src="/images/image 212.png"
+              src={nftImage}
               alt="NFT"
               className="h-16 w-16 rounded-full object-cover border-2 border-indigo-500 shadow-lg shadow-indigo-500/20"
             />
@@ -288,7 +280,7 @@ const SellModal: React.FC<SellModalProps> = ({
           className="w-full bg-gradient-to-r from-[#4023B5] to-[#5834D9] hover:from-[#4628C8] hover:to-[#613BE2] transition-colors duration-300 py-3 text-xl font-semibold rounded-lg shadow-lg"
           disabled={isSelling}
         >
-           {isSelling ? "Listing..." : "Complete Listing"}
+          {isSelling ? "Listing..." : "Complete Listing"}
         </button>
       </div>
     </div>
