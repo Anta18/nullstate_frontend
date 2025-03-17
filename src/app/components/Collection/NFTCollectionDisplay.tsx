@@ -1,4 +1,5 @@
 // components/Collection/NFTCollectionDisplay.tsx
+"use client"
 import React, { useState } from "react";
 import Link from "next/link";
 import Eth from "../../../assets/icons/Eth.svg";
@@ -45,14 +46,15 @@ const NFTCollectionDisplay: React.FC<NFTCollectionDisplayProps> = ({
                       <Eth className="ml-1 h-4" />
                     </div>
                     <span className="text-[#7F8199] text-sm">
-                      {nft.tokenId}
+                      {nft.tokenId.slice(0, 8)}...
+                      {nft.tokenId.slice(-8)}
                     </span>
                   </div>
                 </div>
                 {/* Reserve space for the button */}
                 <div className="mt-auto">
                   <Link
-                    href="/nftpage"
+                    href={`/nftpage/${nft.tokenId}`}
                     className={`w-full block bg-[#4023B5] hover:bg-indigo-800 text-white text-center py-2 px-4 text-sm font-bold transition-opacity duration-200 ease-in-out ${
                       hoveredId === nft.id ? "opacity-100" : "opacity-0"
                     }`}

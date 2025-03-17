@@ -2,7 +2,7 @@ import React from "react";
 
 interface AdditionalInfoProps {
   contactAddress: string;
-  tokenId: number;
+  tokenId: string;
   creator: string;
   creatorFee: number;
 }
@@ -83,7 +83,7 @@ const AdditionalInfo: React.FC<AdditionalInfoProps> = ({
         </div>
         <div>
           <p className="text-[#7F8199] text-xs">CREATOR</p>
-          <p className="text-sm font-bold">{creator}</p>
+          <p className="text-sm font-bold">{creator.slice(0,5)}....{creator.slice(-8)}</p>
         </div>
       </div>
 
