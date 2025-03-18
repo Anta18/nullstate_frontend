@@ -15,7 +15,8 @@ export async function POST(request:NextRequest){
             nftPrice,
             nftOwnerAddress,
             nftCreatorAddress,
-            nftStatus
+            nftStatus,
+            collectionName
         } = body;
 
         const newNFT = await createNFT({
@@ -26,7 +27,8 @@ export async function POST(request:NextRequest){
             nftPrice,
             nftOwnerAddress,
             nftCreatorAddress,
-            nftStatus
+            nftStatus,
+            collectionName
         });
         return NextResponse.json(newNFT,{status: 201});
         

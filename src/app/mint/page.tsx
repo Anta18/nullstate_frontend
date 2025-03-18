@@ -1,11 +1,11 @@
 "use client";
-import React, { useState, useRef, useMemo } from "react";
+import React, { useState, useRef, useMemo,  useCallback } from "react";
 import { Afacad } from "next/font/google";
 import { useFuel, useIsConnected } from "@fuels/react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Eth from "../../assets/icons/Eth.svg";
-
+import useSWR from "swr";
 const afacad = Afacad({ subsets: ["latin"], weight: ["400", "600", "700"] });
 
 import uploadFileToPinata from "@/utils/pinataUpload";
@@ -13,6 +13,8 @@ import NFTABI from "../../ABI's/NFT/NFT-contract-abi.json";
 import { generateRandomSubId } from "@/utils/randomSubId";
 import { useWallet } from "@fuels/react";
 import { Contract, getMintedAssetId } from "fuels";
+
+
 
 const NFT_CONTRACT_ID =
   "0xbcd6b6790d35474a72091db0f0efb570bbf51228d680f5322011dc566c5ca16e";
@@ -32,6 +34,23 @@ interface NFT {
   nftStatus: string;
 }
 
+interface Collection {
+  collectionName: string;
+  floorPrice: string;
+  imageUrl: string;
+  lastSoldImageUrls: string[];
+  sales: string;
+  volume: string;
+}
+
+const fetcher = async (url: string) => {
+  const res = await fetch(url);
+  if (!res.ok) {
+    throw new Error("Error fetching data");
+  }
+  return res.json();
+};
+
 const NFTMintPage: React.FC = () => {
   const { wallet } = useWallet();
   const { fuel } = useFuel();
@@ -41,8 +60,8 @@ const NFTMintPage: React.FC = () => {
     description: "",
     category: "",
     price: "",
-    collection: "", // "existing" or "new"
-    collectionDetail: "", // Either selecting an existing collection or entering a new one
+    collection: "", 
+    collectionDetail: "", 
   });
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -52,15 +71,16 @@ const NFTMintPage: React.FC = () => {
   const [minting, setMinting] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
-  // Dummy existing collections. Replace with dynamic data if needed.
-  const existingCollections = [
-    "Collection One",
-    "Collection Two",
-    "Collection Three",
-  ];
+
+  const shouldFetchCollections = formData.collection === "existing";
+  const { data: existingCollections, error } = useSWR<Collection[]>(
+    shouldFetchCollections ? "/api/nft-collections" : null,
+    fetcher
+  );
+
 
   const isFormValid = useMemo(() => {
-    // Check basic fields and also that if a collection option is selected, then collectionDetail must be filled
+
     const basicValid =
       formData.name.trim() !== "" &&
       formData.description.trim() !== "" &&
@@ -75,30 +95,35 @@ const NFTMintPage: React.FC = () => {
   const buttonText = uploading
     ? "Uploading..."
     : minting
-    ? "Minting..."
-    : "Mint NFT";
+      ? "Minting..."
+      : "Mint NFT";
   const isButtonDisabled = !isFormValid || uploading || minting;
 
-  const handleInputChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: value,
-      // Clear the collection detail if the collection type changes.
-      ...(name === "collection" ? { collectionDetail: "" } : {}),
-    }));
-  };
+  const handleInputChange = useCallback(
+    (
+      e: React.ChangeEvent<
+        HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+      >
+    ) => {
+      const { name, value } = e.target;
+      setFormData((prevState) => ({
+        ...prevState,
+        [name]: value,
+        ...(name === "collection" ? { collectionDetail: "" } : {}),
+      }));
+    },
+    []
+  );
 
-  const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const numericValue = e.target.value.replace(/\D/g, "");
-    setFormData((prevState) => ({ ...prevState, price: numericValue }));
-  };
+  const handlePriceChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const numericValue = e.target.value.replace(/\D/g, "");
+      setFormData((prevState) => ({ ...prevState, price: numericValue }));
+    },
+    []
+  );
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       setSelectedFile(file);
@@ -109,19 +134,19 @@ const NFTMintPage: React.FC = () => {
       };
       reader.readAsDataURL(file);
     }
-  };
+  }, []);
 
-  const handleImageClick = () => {
+  const handleImageClick = useCallback(() => {
     fileInputRef.current?.click();
-  };
+  }, []);
 
-  const handleOpenModal = () => {
+  const handleOpenModal = useCallback(() => {
     if (!isFormValid) {
       toast.error("Please fill in all fields and upload an image");
       return;
     }
     setShowModal(true);
-  };
+  }, [isFormValid]);
 
   async function CreateNftOnServer(nftData: NFT) {
     try {
@@ -144,11 +169,11 @@ const NFTMintPage: React.FC = () => {
     }
   }
 
-  const handleConfirmMint = async () => {
+  const handleConfirmMint = useCallback(async () => {
     if (!wallet) {
       toast.error("Wallet not connected!");
       setShowModal(false);
-      throw new Error("Wallet not connected!");
+      return;
     }
 
     try {
@@ -162,7 +187,8 @@ const NFTMintPage: React.FC = () => {
         );
         setUploading(false);
       }
-      console.log("IPFS URL:", ipfsUrl);
+
+     
       setMinting(true);
       const contract = new Contract(NFT_CONTRACT_ID, NFTABI, wallet);
       const subId = generateRandomSubId();
@@ -173,6 +199,7 @@ const NFTMintPage: React.FC = () => {
         },
       };
 
+
       const tx = await contract.functions
         .mint(recipientIdentity, subId, 1)
         .txParams({ gasLimit: 10_000_000 })
@@ -182,10 +209,8 @@ const NFTMintPage: React.FC = () => {
       const transactionSummary =
         await transactionResponse.getTransactionSummary();
 
-      console.log("Transaction summary:", transactionSummary);
-
+      
       const mintedAssetId = await getMintedAssetId(NFT_CONTRACT_ID, subId);
-      console.log("Minted assetId:", mintedAssetId);
 
       if (transactionSummary.status !== "success") {
         setMinting(false);
@@ -193,6 +218,7 @@ const NFTMintPage: React.FC = () => {
         return;
       }
 
+      // Register NFT in your backend
       const entry = {
         nftId: mintedAssetId,
         nftName: formData.name,
@@ -202,14 +228,14 @@ const NFTMintPage: React.FC = () => {
         nftOwnerAddress: wallet.address.toString(),
         nftCreatorAddress: wallet.address.toString(),
         nftStatus: "Minted",
+        collectionName: formData.collectionDetail,
       };
-
       await CreateNftOnServer(entry);
-      setMinting(false);
 
+      setMinting(false);
       toast.success("NFT minted successfully!");
 
-      // Clear the form on successful minting.
+      
       setFormData({
         name: "",
         description: "",
@@ -228,8 +254,15 @@ const NFTMintPage: React.FC = () => {
     } finally {
       setShowModal(false);
     }
-    console.log("Minting NFT with data:", formData, selectedFile);
-  };
+  }, [
+    wallet,
+    formData,
+    selectedFile,
+    setUploading,
+    setMinting,
+    setShowModal,
+    toast
+  ]);
 
   return (
     <div
@@ -356,9 +389,12 @@ const NFTMintPage: React.FC = () => {
                           className="w-full bg-[#131419] border border-[#272934] text-white py-2 px-3 rounded focus:outline-none focus:ring-2 focus:ring-purple-600"
                         >
                           <option value="">Select a Collection</option>
-                          {existingCollections.map((col) => (
-                            <option key={col} value={col}>
-                              {col}
+                          {existingCollections?.map((col) => (
+                            <option
+                              key={col.collectionName}
+                              value={col.collectionName}
+                            >
+                              {col.collectionName}
                             </option>
                           ))}
                         </select>
@@ -398,10 +434,9 @@ const NFTMintPage: React.FC = () => {
                 onClick={handleOpenModal}
                 disabled={isButtonDisabled}
                 className={`w-full font-bold py-3 px-4 rounded-[4px] transition duration-300 
-                  ${
-                    isButtonDisabled
-                      ? "bg-gray-500 cursor-not-allowed"
-                      : "bg-[#4023B5] hover:bg-purple-700"
+                  ${isButtonDisabled
+                    ? "bg-gray-500 cursor-not-allowed"
+                    : "bg-[#4023B5] hover:bg-purple-700"
                   } flex justify-center items-center`}
               >
                 {(uploading || minting) && (
@@ -480,8 +515,8 @@ const NFTMintPage: React.FC = () => {
                         {formData.collection === "existing"
                           ? `Existing: ${formData.collectionDetail}`
                           : formData.collection === "new"
-                          ? `New: ${formData.collectionDetail}`
-                          : ""}
+                            ? `New: ${formData.collectionDetail}`
+                            : ""}
                       </span>
                     </div>
                     <div className="flex flex-col">

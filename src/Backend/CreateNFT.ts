@@ -10,11 +10,12 @@ interface NFTType {
     nftOwnerAddress: string;
     nftCreatorAddress: string;
     nftStatus: string;
+    collectionName: string;
 }
 
 export default async function createNFT(input: NFTType) {
     try {
-        const { nftId, nftName, nftDescription, nftImage, nftPrice, nftOwnerAddress, nftCreatorAddress, nftStatus } = input;
+        const { nftId, nftName, nftDescription, nftImage, nftPrice, nftOwnerAddress, nftCreatorAddress, nftStatus, collectionName } = input;
         const newNFT = await prisma.nFTMinting.create({
             data: {
                 nftId,
@@ -24,7 +25,8 @@ export default async function createNFT(input: NFTType) {
                 nftPrice,
                 nftOwnerAddress,
                 nftCreatorAddress,
-                nftStatus
+                nftStatus,
+                collectionName
             }
         });
         return newNFT;
